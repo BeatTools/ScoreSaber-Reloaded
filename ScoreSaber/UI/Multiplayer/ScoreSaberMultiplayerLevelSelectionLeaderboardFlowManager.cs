@@ -18,7 +18,7 @@ namespace ScoreSaber.UI.Multiplayer {
         private readonly ServerPlayerListViewController _serverPlayerListViewController;
 
         private bool _currentlyInMulti;
-        private bool _performingFirstActivation;
+        private bool _firstStartup = true;
 
         public ScoreSaberMultiplayerLevelSelectionLeaderboardFlowManager(MainFlowCoordinator mainFlowCoordinator,
             ServerPlayerListViewController serverPlayerListViewController,
@@ -56,17 +56,19 @@ namespace ScoreSaber.UI.Multiplayer {
         }
 
         private void HideLeaderboard() {
-            if (_platformLeaderboardViewController.isInViewControllerHierarchy) {
-                FlowCoordinator currentFlowCoordinator = _mainFlowCoordinator.YoungestChildFlowCoordinatorOrSelf();
-                if (!(currentFlowCoordinator is MultiplayerLevelSelectionFlowCoordinator)) {
-                    return;
-                }
-
-                currentFlowCoordinator.InvokeMethod<object, FlowCoordinator>("SetRightScreenViewController", null,
-                    ViewController.AnimationType.Out);
+            if (!_platformLeaderboardViewController.isInViewControllerHierarchy) {
+                return;
             }
-        }
 
+            FlowCoordinator currentFlowCoordinator = _mainFlowCoordinator.YoungestChildFlowCoordinatorOrSelf();
+            if (!(currentFlowCoordinator is MultiplayerLevelSelectionFlowCoordinator)) {
+                return;
+            }
+
+            currentFlowCoordinator.InvokeMethod<object, FlowCoordinator>("SetRightScreenViewController", null,
+                ViewController.AnimationType.Out);
+        }
+        
         private void ShowLeaderboard() {
             if (!InMulti()) {
                 return;
@@ -82,20 +84,15 @@ namespace ScoreSaber.UI.Multiplayer {
             FlowCoordinator currentFlowCoordinator = _mainFlowCoordinator.YoungestChildFlowCoordinatorOrSelf();
             currentFlowCoordinator.InvokeMethod<object, FlowCoordinator>("SetRightScreenViewController",
                 _platformLeaderboardViewController, ViewController.AnimationType.In);
-            _serverPlayerListViewController.gameObject
-                .SetActive(false); // This is a bandaid fix, first time startup it gets stuck while animating kinda like the issue we had before (TODO: Fix in 2024)
 
-            // I am... very tired... it gets stuck in a loading loop on initialization sometimes.
-            if (_performingFirstActivation) {
-                _performingFirstActivation = false;
-                _ = Task.Run(async () => {
-                    await Task.Delay(250);
-                    _ = UnityMainThreadTaskScheduler.Factory.StartNew(() => {
-                        _platformLeaderboardViewController.Refresh(true, true);
-                    });
-                });
+            if (_firstStartup) {
+                _firstStartup = false;
+                _serverPlayerListViewController.gameObject.SetActive(false);
+            } else {
+                _serverPlayerListViewController.gameObject.SetActive(true);
             }
         }
+
 
         private void LevelSelectionNavigationController_didActivateEvent(bool firstActivation, bool addedToHierarchy,
             bool screenSystemEnabling) {
@@ -104,7 +101,7 @@ namespace ScoreSaber.UI.Multiplayer {
             }
 
             if (firstActivation) {
-                _performingFirstActivation = true;
+                _firstStartup = true;
             }
 
             _currentlyInMulti = true;
@@ -134,11 +131,7 @@ namespace ScoreSaber.UI.Multiplayer {
             }
 
             FlowCoordinator currentFlowCoordinator = _mainFlowCoordinator.YoungestChildFlowCoordinatorOrSelf();
-            if (!(currentFlowCoordinator is MultiplayerLevelSelectionFlowCoordinator)) {
-                return false;
-            }
-
-            return true;
+            return currentFlowCoordinator is MultiplayerLevelSelectionFlowCoordinator;
         }
     }
 }
