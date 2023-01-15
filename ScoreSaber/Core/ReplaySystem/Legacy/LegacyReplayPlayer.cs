@@ -143,7 +143,7 @@ namespace ScoreSaber.Core.ReplaySystem.Legacy {
             eulerAngles += headRotationOffset;
             rot.eulerAngles = eulerAngles;
 
-            float t2 = 4f == 0.0f ? 1.0f : Time.deltaTime * 6f;
+            float t2 = Time.deltaTime * 6f;
 
             pos.x += Plugin.Settings.replayCameraXOffset;
             pos.y += Plugin.Settings.replayCameraYOffset;
