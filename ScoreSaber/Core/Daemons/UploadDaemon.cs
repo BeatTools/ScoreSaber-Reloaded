@@ -46,8 +46,10 @@ namespace ScoreSaber.Core.Daemons {
 
         private void SetupUploader() {
 
-            var transitionSetup = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
-            var multiTransitionSetup = Resources.FindObjectsOfTypeAll<MultiplayerLevelScenesTransitionSetupDataSO>().FirstOrDefault();
+            var transitionSetup =
+ Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
+            var multiTransitionSetup =
+ Resources.FindObjectsOfTypeAll<MultiplayerLevelScenesTransitionSetupDataSO>().FirstOrDefault();
             if (Plugin.ScoreSubmission) {
                 transitionSetup.didFinishEvent -= UploadDaemonHelper.ThreeInstance;
                 transitionSetup.didFinishEvent -= Three;
@@ -125,7 +127,8 @@ namespace ScoreSaber.Core.Daemons {
             if (difficultyBeatmap.level is CustomBeatmapLevel) {
                 var defaultEnvironment = _customLevelLoader.LoadEnvironmentInfo(null, false);
 
-                var beatmapData = await difficultyBeatmap.GetBeatmapDataAsync(defaultEnvironment, _playerDataModel.playerData.playerSpecificSettings);
+                var beatmapData =
+ await difficultyBeatmap.GetBeatmapDataAsync(defaultEnvironment, _playerDataModel.playerData.playerSpecificSettings);
 
                 if (LeaderboardUtils.ContainsV3Stuff(beatmapData)) {
                     UploadStatusChanged?.Invoke(UploadStatus.Error, "New note type not supported, not uploading");
@@ -141,17 +144,20 @@ namespace ScoreSaber.Core.Daemons {
 
                 try {
                     UploadStatusChanged?.Invoke(UploadStatus.Packaging, "Packaging score...");
-                    ScoreSaberUploadData data = ScoreSaberUploadData.Create(difficultyBeatmap, levelCompletionResults, _playerService.localPlayerInfo, GetVersionHash());
+                    ScoreSaberUploadData data =
+ ScoreSaberUploadData.Create(difficultyBeatmap, levelCompletionResults, _playerService.localPlayerInfo, GetVersionHash());
                     string scoreData = JsonConvert.SerializeObject(data);
 
                     // TODO: Simplify now that we're open source
-                    byte[] encodedPassword = new UTF8Encoding().GetBytes($"{UPLOAD_SECRET}-{_playerService.localPlayerInfo.playerKey}-{_playerService.localPlayerInfo.playerId}-{UPLOAD_SECRET}");
+                    byte[] encodedPassword =
+ new UTF8Encoding().GetBytes($"{UPLOAD_SECRET}-{_playerService.localPlayerInfo.playerKey}-{_playerService.localPlayerInfo.playerId}-{UPLOAD_SECRET}");
                     byte[] keyHash = ((HashAlgorithm)CryptoConfig.CreateFromName("MD5")).ComputeHash(encodedPassword);
                     string key = BitConverter.ToString(keyHash)
                           .Replace("-", string.Empty)
                           .ToLower();
 
-                    string scoreDataHex = BitConverter.ToString(Swap(Encoding.UTF8.GetBytes(scoreData), Encoding.UTF8.GetBytes(key))).Replace("-", "");
+                    string scoreDataHex =
+ BitConverter.ToString(Swap(Encoding.UTF8.GetBytes(scoreData), Encoding.UTF8.GetBytes(key))).Replace("-", "");
                     Seven(data, scoreDataHex, difficultyBeatmap, levelCompletionResults).RunTask();
                 } catch (Exception ex) {
                     UploadStatusChanged?.Invoke(UploadStatus.Error, "Failed to upload score, error written to log.");
@@ -269,7 +275,8 @@ namespace ScoreSaber.Core.Daemons {
 
             try {
                 if (Plugin.Settings.saveLocalReplays) {
-                    string replayPath = $@"{Settings.replayPath}\{scoreSaberUploadData.playerId}-{scoreSaberUploadData.songName.ReplaceInvalidChars().Truncate(155)}-{difficultyBeatmap.difficulty.SerializedName()}-{difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName}-{scoreSaberUploadData.leaderboardId}.dat";
+                    string replayPath =
+ $@"{Settings.replayPath}\{scoreSaberUploadData.playerId}-{scoreSaberUploadData.songName.ReplaceInvalidChars().Truncate(155)}-{difficultyBeatmap.difficulty.SerializedName()}-{difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName}-{scoreSaberUploadData.leaderboardId}.dat";
                     File.WriteAllBytes(replayPath, replay);
                 }
             } catch (Exception ex) {
@@ -279,7 +286,8 @@ namespace ScoreSaber.Core.Daemons {
 
         public void Dispose() {
             Plugin.Log.Info("Upload service succesfully deconstructed");
-            var transitionSetup = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
+            var transitionSetup =
+ Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
             transitionSetup.didFinishEvent -= Three;
         }
 
@@ -309,7 +317,8 @@ namespace ScoreSaber.Core.Daemons {
         internal static string GetVersionHash() {
             using (var md5 = MD5.Create()) {
                 string versionString = string.Format("{0}{1}", Plugin.Instance.LibVersion, Application.version);
-                string hash = BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(versionString))).Replace("-", "").ToLowerInvariant();
+                string hash =
+ BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(versionString))).Replace("-", "").ToLowerInvariant();
                 return hash;
             }
         }

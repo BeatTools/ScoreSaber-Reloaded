@@ -1,33 +1,38 @@
-﻿using IPA.Utilities.Async;
+﻿#region
+
+using IPA.Utilities.Async;
 using ScoreSaber.Core.Daemons;
 using ScoreSaber.Core.ReplaySystem.Data;
 using ScoreSaber.Core.Utils;
+using SevenZip.Compression.LZMA;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using UnityEngine;
 
+#endregion
+
 namespace ScoreSaber.Core.ReplaySystem {
     internal class ReplayLoader {
+        private readonly MenuTransitionsHelper _menuTransitionsHelper;
 
         private readonly PlayerDataModel _playerDataModel;
-        private readonly MenuTransitionsHelper _menuTransitionsHelper;
-        private readonly StandardLevelScenesTransitionSetupDataSO _standardLevelScenesTransitionSetupDataSO;
         private readonly ReplayFileReader _replayFileReader;
-        public ReplayLoader(PlayerDataModel playerDataModel, MenuTransitionsHelper menuTransitionsHelper) {
+        private readonly StandardLevelScenesTransitionSetupDataSO _standardLevelScenesTransitionSetupDataSO;
 
+        public ReplayLoader(PlayerDataModel playerDataModel, MenuTransitionsHelper menuTransitionsHelper) {
             _playerDataModel = playerDataModel;
             _menuTransitionsHelper = menuTransitionsHelper;
-            _standardLevelScenesTransitionSetupDataSO = Accessors.StandardLevelScenesTransitionSetupData(ref _menuTransitionsHelper);
+            _standardLevelScenesTransitionSetupDataSO =
+                Accessors.StandardLevelScenesTransitionSetupData(ref _menuTransitionsHelper);
             _replayFileReader = new ReplayFileReader();
         }
 
-        public async Task Load(byte[] replay, IDifficultyBeatmap difficultyBeatmap, GameplayModifiers modifiers, string playerName) {
-
+        public async Task Load(byte[] replay, IDifficultyBeatmap difficultyBeatmap, GameplayModifiers modifiers,
+            string playerName) {
             Plugin.ReplayState.CurrentLevel = difficultyBeatmap;
             Plugin.ReplayState.CurrentModifiers = modifiers;
             Plugin.ReplayState.CurrentPlayerName = playerName;
@@ -39,13 +44,14 @@ namespace ScoreSaber.Core.ReplaySystem {
             }
         }
 
-        private async Task LoadLegacyReplay(byte[] replay, IDifficultyBeatmap difficultyBeatmap, GameplayModifiers gameplayModifiers) {
+        private async Task LoadLegacyReplay(byte[] replay, IDifficultyBeatmap difficultyBeatmap,
+            GameplayModifiers gameplayModifiers) {
             await Task.Run(async () => {
-                byte[] decompressed = SevenZip.Compression.LZMA.SevenZipHelper.Decompress(replay);
+                byte[] decompressed = SevenZipHelper.Decompress(replay);
                 BinaryFormatter formatter = new BinaryFormatter();
                 Z.SavedData replayData = null;
                 try {
-                    using (var dataStream = new MemoryStream(decompressed)) {
+                    using (MemoryStream dataStream = new MemoryStream(decompressed)) {
                         replayData = (Z.SavedData)formatter.Deserialize(dataStream);
                     }
                 } catch (Exception) {
@@ -61,8 +67,11 @@ namespace ScoreSaber.Core.ReplaySystem {
                 if (gameplayModifiers == null) {
                     gameplayModifiers = new GameplayModifiers();
                 }
-                _menuTransitionsHelper.StartStandardLevel("Replay", difficultyBeatmap, difficultyBeatmap.level, playerData.overrideEnvironmentSettings,
-                    playerData.colorSchemesSettings.GetSelectedColorScheme(), gameplayModifiers, playerSettings, null, "Exit Replay", false, false, null, ReplayEnd, null);
+
+                _menuTransitionsHelper.StartStandardLevel("Replay", difficultyBeatmap, difficultyBeatmap.level,
+                    playerData.overrideEnvironmentSettings,
+                    playerData.colorSchemesSettings.GetSelectedColorScheme(), gameplayModifiers, playerSettings, null,
+                    "Exit Replay", false, false, null, ReplayEnd, null);
             });
         }
 
@@ -91,8 +100,7 @@ namespace ScoreSaber.Core.ReplaySystem {
         }
 
         private async Task<ReplayFile> LoadReplay(byte[] replay) {
-
-            var replayFile = await Task.Run(() => {
+            ReplayFile replayFile = await Task.Run(() => {
                 return _replayFileReader.Read(replay);
             });
             return replayFile;
@@ -100,25 +108,34 @@ namespace ScoreSaber.Core.ReplaySystem {
 
 
         private async Task StartReplay(ReplayFile replay, IDifficultyBeatmap difficultyBeatmap) {
-
             await Task.Run(() => {
                 Plugin.ReplayState.IsLegacyReplay = false;
                 Plugin.ReplayState.IsPlaybackEnabled = true;
                 Plugin.ReplayState.LoadedReplayFile = replay;
                 PlayerData playerData = _playerDataModel.playerData;
                 PlayerSpecificSettings localPlayerSettings = playerData.playerSpecificSettings;
-                PlayerSpecificSettings playerSettings = new PlayerSpecificSettings(replay.metadata.LeftHanded, replay.metadata.InitialHeight, replay.heightKeyframes.Count > 0, localPlayerSettings.sfxVolume, localPlayerSettings.reduceDebris, localPlayerSettings.noTextsAndHuds, localPlayerSettings.noFailEffects, localPlayerSettings.advancedHud, localPlayerSettings.autoRestart, localPlayerSettings.saberTrailIntensity, localPlayerSettings.noteJumpDurationTypeSettings, localPlayerSettings.noteJumpFixedDuration, localPlayerSettings.noteJumpStartBeatOffset, localPlayerSettings.hideNoteSpawnEffect, localPlayerSettings.adaptiveSfx, localPlayerSettings.environmentEffectsFilterDefaultPreset, localPlayerSettings.environmentEffectsFilterExpertPlusPreset);
+                PlayerSpecificSettings playerSettings = new PlayerSpecificSettings(replay.metadata.LeftHanded,
+                    replay.metadata.InitialHeight, replay.heightKeyframes.Count > 0, localPlayerSettings.sfxVolume,
+                    localPlayerSettings.reduceDebris, localPlayerSettings.noTextsAndHuds,
+                    localPlayerSettings.noFailEffects, localPlayerSettings.advancedHud, localPlayerSettings.autoRestart,
+                    localPlayerSettings.saberTrailIntensity, localPlayerSettings.noteJumpDurationTypeSettings,
+                    localPlayerSettings.noteJumpFixedDuration, localPlayerSettings.noteJumpStartBeatOffset,
+                    localPlayerSettings.hideNoteSpawnEffect, localPlayerSettings.adaptiveSfx,
+                    localPlayerSettings.environmentEffectsFilterDefaultPreset,
+                    localPlayerSettings.environmentEffectsFilterExpertPlusPreset);
 
                 _standardLevelScenesTransitionSetupDataSO.didFinishEvent -= UploadDaemonHelper.ThreeInstance;
-                UnityMainThreadTaskScheduler.Factory.StartNew(() => _menuTransitionsHelper.StartStandardLevel("Replay", difficultyBeatmap, difficultyBeatmap.level,
+                UnityMainThreadTaskScheduler.Factory.StartNew(() => _menuTransitionsHelper.StartStandardLevel("Replay",
+                    difficultyBeatmap, difficultyBeatmap.level,
                     playerData.overrideEnvironmentSettings, playerData.colorSchemesSettings.GetSelectedColorScheme(),
-                    LeaderboardUtils.GetModifierFromStrings(replay.metadata.Modifiers.ToArray(), false).gameplayModifiers,
-                    playerSettings, null, "Exit Replay", false, false, null, ReplayEnd,null));
+                    LeaderboardUtils.GetModifierFromStrings(replay.metadata.Modifiers.ToArray(), false)
+                        .gameplayModifiers,
+                    playerSettings, null, "Exit Replay", false, false, null, ReplayEnd, null));
             });
         }
 
-        private void ReplayEnd(StandardLevelScenesTransitionSetupDataSO standardLevelSceneSetupData, LevelCompletionResults levelCompletionResults) {
-
+        private void ReplayEnd(StandardLevelScenesTransitionSetupDataSO standardLevelSceneSetupData,
+            LevelCompletionResults levelCompletionResults) {
             Plugin.ReplayState.IsPlaybackEnabled = false;
             if (Plugin.ScoreSubmission) {
                 _standardLevelScenesTransitionSetupDataSO.didFinishEvent += UploadDaemonHelper.ThreeInstance;

@@ -1,25 +1,23 @@
-﻿using Zenject;
-using ScoreSaber.Core.ReplaySystem.Recorders;
-using SiraUtil.Logging;
-using ScoreSaber.Core.Utils;
-using System.Reflection;
-using ScoreSaber.Core.Daemons;
+﻿#region
 
-namespace ScoreSaber.Core.ReplaySystem.Installers
-{
-    internal class RecordInstaller : Installer
-    {
-        private readonly SiraLog _siraLog;
+using ScoreSaber.Core.ReplaySystem.Recorders;
+using ScoreSaber.Core.Utils;
+using SiraUtil.Logging;
+using Zenject;
+
+#endregion
+
+namespace ScoreSaber.Core.ReplaySystem.Installers {
+    internal class RecordInstaller : Installer {
         private readonly GameplayCoreSceneSetupData _gameplayCoreSceneSetupData;
+        private readonly SiraLog _siraLog;
 
         public RecordInstaller(SiraLog siraLog, GameplayCoreSceneSetupData gameplayCoreSceneSetupData) {
-
             _siraLog = siraLog;
             _gameplayCoreSceneSetupData = gameplayCoreSceneSetupData;
         }
 
         public override void InstallBindings() {
-
             bool hasV3Stuff = LeaderboardUtils.ContainsV3Stuff(_gameplayCoreSceneSetupData.transformedBeatmapData);
 
             if (hasV3Stuff) {

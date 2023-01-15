@@ -1,4 +1,7 @@
 ﻿#if DEV
+
+#region
+
 using ScoreSaber.Core.Data;
 using ScoreSaber.Core.Services;
 using ScoreSaber.Extensions;
@@ -9,26 +12,26 @@ using System.Threading.Tasks;
 using UnityEngine;
 using static ScoreSaber.UI.Leaderboard.ScoreSaberLeaderboardViewController;
 
+#endregion
+
 namespace ScoreSaber.Core.Daemons {
     internal class MockUploadDaemon : IUploadDaemon {
+        private readonly LeaderboardService _leaderboardService;
 
-        public bool uploading { get; set; }
-        public event Action<UploadStatus, string> UploadStatusChanged;
+        private readonly PlayerService _playerService;
+        private readonly ReplayService _replayService;
 
-        private readonly PlayerService _playerService = null;
-        private readonly LeaderboardService _leaderboardService = null;
-        private readonly ReplayService _replayService = null;
-
-        public MockUploadDaemon(LeaderboardService leaderboardService, PlayerService playerService, ReplayService replayService) {
-
+        public MockUploadDaemon(LeaderboardService leaderboardService, PlayerService playerService,
+            ReplayService replayService) {
             _playerService = playerService;
             _leaderboardService = leaderboardService;
             _replayService = replayService;
 
-            var standardtransitionSetup = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
-            var multiTransitionSetup = Resources.FindObjectsOfTypeAll<MultiplayerLevelScenesTransitionSetupDataSO>().FirstOrDefault();
+            StandardLevelScenesTransitionSetupDataSO standardtransitionSetup =
+                Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
+            MultiplayerLevelScenesTransitionSetupDataSO multiTransitionSetup =
+                Resources.FindObjectsOfTypeAll<MultiplayerLevelScenesTransitionSetupDataSO>().FirstOrDefault();
             if (Plugin.ScoreSubmission) {
-
                 standardtransitionSetup.didFinishEvent -= UploadDaemonHelper.ThreeInstance;
                 standardtransitionSetup.didFinishEvent -= FakeUpload; // Just to be sure
                 UploadDaemonHelper.ThreeInstance = FakeUpload;
@@ -43,24 +46,32 @@ namespace ScoreSaber.Core.Daemons {
             Plugin.Log.Debug("MockUpload service setup!");
         }
 
-        public void FakeUpload(StandardLevelScenesTransitionSetupDataSO standardLevelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults) {
+        public bool uploading { get; set; }
+        public event Action<UploadStatus, string> UploadStatusChanged;
 
-            ProcessUpload(standardLevelScenesTransitionSetupDataSO.gameMode, standardLevelScenesTransitionSetupDataSO.difficultyBeatmap, levelCompletionResults, standardLevelScenesTransitionSetupDataSO.practiceSettings != null);
+        public void FakeUpload(StandardLevelScenesTransitionSetupDataSO standardLevelScenesTransitionSetupDataSO,
+            LevelCompletionResults levelCompletionResults) {
+            ProcessUpload(standardLevelScenesTransitionSetupDataSO.gameMode,
+                standardLevelScenesTransitionSetupDataSO.difficultyBeatmap, levelCompletionResults,
+                standardLevelScenesTransitionSetupDataSO.practiceSettings != null);
         }
 
 
-        private void FakeMultiUpload(MultiplayerLevelScenesTransitionSetupDataSO multiplayerLevelScenesTransitionSetupDataSO, MultiplayerResultsData multiplayerResultsData) {
-
-            ProcessUpload(multiplayerLevelScenesTransitionSetupDataSO.gameMode, multiplayerLevelScenesTransitionSetupDataSO.difficultyBeatmap, multiplayerResultsData.localPlayerResultData.multiplayerLevelCompletionResults.levelCompletionResults, false);
+        private void FakeMultiUpload(
+            MultiplayerLevelScenesTransitionSetupDataSO multiplayerLevelScenesTransitionSetupDataSO,
+            MultiplayerResultsData multiplayerResultsData) {
+            ProcessUpload(multiplayerLevelScenesTransitionSetupDataSO.gameMode,
+                multiplayerLevelScenesTransitionSetupDataSO.difficultyBeatmap,
+                multiplayerResultsData.localPlayerResultData.multiplayerLevelCompletionResults.levelCompletionResults,
+                false);
         }
 
-        private void ProcessUpload(string gameMode, IDifficultyBeatmap difficultyBeatmap, LevelCompletionResults levelCompletionResults, bool practicing) {
-
-        
-            var practiceViewController = Resources.FindObjectsOfTypeAll<PracticeViewController>().FirstOrDefault();
+        private void ProcessUpload(string gameMode, IDifficultyBeatmap difficultyBeatmap,
+            LevelCompletionResults levelCompletionResults, bool practicing) {
+            PracticeViewController practiceViewController =
+                Resources.FindObjectsOfTypeAll<PracticeViewController>().FirstOrDefault();
             if (!practiceViewController.isInViewControllerHierarchy) {
                 if (gameMode == "Solo" || gameMode == "Multiplayer") {
-
                     if (practicing) {
                         // We still want to write a replay to memory if in practice mode
                         _replayService.WriteSerializedReplay().RunTask();
@@ -79,8 +90,10 @@ namespace ScoreSaber.Core.Daemons {
 
 
                     if (difficultyBeatmap.level is CustomBeatmapLevel) {
-                        if (_leaderboardService.currentLoadedLeaderboard.leaderboardInfoMap.leaderboardInfo.playerScore != null) {
-                            if (levelCompletionResults.modifiedScore < _leaderboardService.currentLoadedLeaderboard.leaderboardInfoMap.leaderboardInfo.playerScore.modifiedScore) {
+                        if (_leaderboardService.currentLoadedLeaderboard.leaderboardInfoMap.leaderboardInfo
+                                .playerScore != null) {
+                            if (levelCompletionResults.modifiedScore < _leaderboardService.currentLoadedLeaderboard
+                                    .leaderboardInfoMap.leaderboardInfo.playerScore.modifiedScore) {
                                 UploadStatusChanged?.Invoke(UploadStatus.Error, "Didn't beat score, not uploading.");
                                 return;
                             }
@@ -97,19 +110,20 @@ namespace ScoreSaber.Core.Daemons {
         }
 
         public async Task WriteReplay(IDifficultyBeatmap beatmap) {
-
             uploading = true;
             UploadStatusChanged?.Invoke(UploadStatus.Uploading, "Packaging replay...");
 
             byte[] serializedReplay = await _replayService.WriteSerializedReplay();
 
             if (Plugin.Settings.saveLocalReplays) {
-                string replayPath = $@"{Settings.replayPath}\{_playerService.localPlayerInfo.playerId}-{beatmap.level.songName.ReplaceInvalidChars().Truncate(155)}-{beatmap.difficulty.SerializedName()}-{beatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName}-{beatmap.level.levelID}.dat";
+                string replayPath =
+                    $@"{Settings.replayPath}\{_playerService.localPlayerInfo.playerId}-{beatmap.level.songName.ReplaceInvalidChars().Truncate(155)}-{beatmap.difficulty.SerializedName()}-{beatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName}-{beatmap.level.levelID}.dat";
                 File.WriteAllBytes(replayPath, serializedReplay);
             }
+
             uploading = false;
 
-            UploadStatusChanged?.Invoke(UploadStatus.Success, $"Mock score replay saved!");
+            UploadStatusChanged?.Invoke(UploadStatus.Success, "Mock score replay saved!");
         }
     }
 }

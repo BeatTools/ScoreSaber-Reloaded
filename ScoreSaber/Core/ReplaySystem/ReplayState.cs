@@ -1,10 +1,12 @@
-﻿using ScoreSaber.Core.ReplaySystem.Data;
+﻿#region
+
+using ScoreSaber.Core.ReplaySystem.Data;
 using System.Collections.Generic;
 
-namespace ScoreSaber.Core.ReplaySystem
-{
-    internal class ReplayState
-    {
+#endregion
+
+namespace ScoreSaber.Core.ReplaySystem {
+    internal class ReplayState {
         // State management
         internal IDifficultyBeatmap CurrentLevel;
         internal GameplayModifiers CurrentModifiers;

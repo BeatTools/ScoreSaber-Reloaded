@@ -1,4 +1,6 @@
-﻿using BeatSaberMarkupLanguage.Attributes;
+﻿#region
+
+using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
@@ -8,36 +10,32 @@ using ScoreSaber.UI.Elements.Team;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ScoreSaber.UI.Main.ViewControllers
-{
+#endregion
+
+namespace ScoreSaber.UI.Main.ViewControllers {
     [HotReload]
-    internal class TeamViewController : BSMLAutomaticViewController
-    {
+    internal class TeamViewController : BSMLAutomaticViewController {
+        [UIComponent("tab-selector")] protected readonly TabSelector _tabSelector = null;
 
-        [UIComponent("tab-selector")]
-        protected readonly TabSelector _tabSelector = null;
-
-        [UIValue("team-hosts")]
-        protected readonly List<object> _teamHosts = new List<object>();
+        [UIValue("team-hosts")] protected readonly List<object> _teamHosts = new List<object>();
 
         [UIAction("#post-parse")]
         protected void Parsed() {
-
             _tabSelector.transform.localScale *= 0.75f;
         }
 
-        protected override async void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
-
+        protected override async void DidActivate(bool firstActivation, bool addedToHierarchy,
+            bool screenSystemEnabling) {
             if (firstActivation) {
-
                 _teamHosts.Clear();
-                var team = await GetTeam();
+                ScoreSaberTeam team = await GetTeam();
 
                 foreach (KeyValuePair<TeamType, List<TeamMember>> member in team.TeamMembers) {
                     string teamName = member.Key.ToString();
                     if (teamName == "RT") {
                         teamName = "Ranking Team";
                     }
+
                     TeamHost host = TeamToProfileHost(member.Value, teamName);
                     _teamHosts.Add(host);
                 }
@@ -61,8 +59,7 @@ namespace ScoreSaber.UI.Main.ViewControllers
         }
 
         private void DidSelect(SegmentedControl segmentedControl, int pos) {
-
-            var teamHost = _teamHosts[pos] as TeamHost;
+            TeamHost teamHost = _teamHosts[pos] as TeamHost;
             teamHost.Init();
             foreach (TeamUserInfo profile in teamHost.profiles) {
                 profile.LoadImage();
@@ -70,18 +67,20 @@ namespace ScoreSaber.UI.Main.ViewControllers
         }
 
         private TeamHost TeamToProfileHost(List<TeamMember> team, string teamName) {
-
             List<TeamUserInfo> host = new List<TeamUserInfo>();
             foreach (TeamMember member in team) {
-                host.Add(new TeamUserInfo(member.ProfilePicture, member.Name, member.Discord, member.GitHub, member.Twitch, member.Twitter, member.YouTube));
+                host.Add(new TeamUserInfo(member.ProfilePicture, member.Name, member.Discord, member.GitHub,
+                    member.Twitch, member.Twitter, member.YouTube));
             }
+
             return new TeamHost(teamName, host);
         }
 
         public async Task<ScoreSaberTeam> GetTeam() {
-
-            var response = await Plugin.HttpInstance.GetRawAsync("https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/team.json");
-            var teamData = JsonConvert.DeserializeObject<ScoreSaberTeam>(response);
+            string response =
+                await Plugin.HttpInstance.GetRawAsync(
+                    "https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/team.json");
+            ScoreSaberTeam teamData = JsonConvert.DeserializeObject<ScoreSaberTeam>(response);
             return teamData;
         }
     }

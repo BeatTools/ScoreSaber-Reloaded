@@ -1,10 +1,14 @@
 ﻿#pragma warning disable IDE1006 // Naming Styles
+
+#region
+
 using System;
 using UnityEngine;
 
+#endregion
+
 // Old replay "format"
 public class Z : MonoBehaviour {
-
     public class Keyframe {
         public Vector3 _pos1;
         public Vector3 _pos2;
@@ -19,6 +23,8 @@ public class Z : MonoBehaviour {
 
     [Serializable]
     public class SavedData {
+        public KeyframeSerializable[] _keyframes;
+
         [Serializable]
         public class KeyframeSerializable {
             public float _xPos1;
@@ -52,8 +58,5 @@ public class Z : MonoBehaviour {
             public int combo;
             public int score;
         }
-        public KeyframeSerializable[] _keyframes;
     }
-
 }
-

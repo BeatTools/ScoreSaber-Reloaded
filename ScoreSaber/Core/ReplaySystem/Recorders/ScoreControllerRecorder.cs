@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ScoreSaber.Core.AC.Recorders
-{
-    internal class ScoreControllerRecorder
-    {
+﻿namespace ScoreSaber.Core.AC.Recorders {
+    internal class ScoreControllerRecorder {
     }
 }

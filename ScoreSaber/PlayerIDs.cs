@@ -1,8 +1,6 @@
 ﻿#pragma warning disable IDE1006 // Naming Styles
-namespace ScoreSaber
-{
-    internal static class PlayerIDs
-    {
+namespace ScoreSaber {
+    internal static class PlayerIDs {
         internal const string Denyah = "76561198064659288";
         internal const string CyanSnow = "76561198019856958";
         internal const string Williums = "76561198182060577";
