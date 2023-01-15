@@ -8,7 +8,7 @@ using UnityEngine;
 
 #endregion
 
-namespace ScoreSaber.Core.Data {
+namespace ScoreSaber.Core.Data.Internal {
     internal class Settings {
         public bool hideReplayUI = false;
         private static int _currentVersion => 6;

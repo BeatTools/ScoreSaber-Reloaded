@@ -1,11 +1,12 @@
 #region
 
+using ScoreSaber.Libraries.SevenZip.Common;
 using System;
 using System.IO;
 
 #endregion
 
-namespace SevenZip.Compression.LZ {
+namespace ScoreSaber.Libraries.SevenZip.Compress.LZ {
     public class BinTree : InWindow, IMatchFinder {
         private const uint kHash2Size = 1 << 10;
         private const uint kHash3Size = 1 << 16;

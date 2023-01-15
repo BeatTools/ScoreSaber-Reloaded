@@ -4,7 +4,7 @@ using System.IO;
 
 #endregion
 
-namespace SevenZip.Compression.RangeCoder {
+namespace ScoreSaber.Libraries.SevenZip.Compress.RangeCoder {
     internal class Encoder {
         public const uint kTopValue = 1 << 24;
         private byte _cache;

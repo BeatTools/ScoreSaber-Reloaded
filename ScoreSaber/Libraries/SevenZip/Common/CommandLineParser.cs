@@ -5,7 +5,7 @@ using System.Collections;
 
 #endregion
 
-namespace SevenZip.CommandLineParser {
+namespace ScoreSaber.Libraries.SevenZip.Common {
     public enum SwitchType {
         Simple,
         PostMinus,
@@ -15,12 +15,12 @@ namespace SevenZip.CommandLineParser {
     }
 
     public class SwitchForm {
-        public string IDString;
-        public int MaxLen;
-        public int MinLen;
-        public bool Multi;
-        public string PostCharSet;
-        public SwitchType Type;
+        public readonly string IDString;
+        public readonly int MaxLen;
+        public readonly int MinLen;
+        public readonly bool Multi;
+        public readonly string PostCharSet;
+        public readonly SwitchType Type;
 
         public SwitchForm(string idString, SwitchType type, bool multi,
             int minLen, int maxLen, string postCharSet) {
@@ -43,7 +43,7 @@ namespace SevenZip.CommandLineParser {
 
     public class SwitchResult {
         public int PostCharIndex;
-        public ArrayList PostStrings = new ArrayList();
+        public readonly ArrayList PostStrings = new ArrayList();
         public bool ThereIs;
         public bool WithMinus;
 
@@ -59,7 +59,7 @@ namespace SevenZip.CommandLineParser {
         private const char kSwitchMinus = '-';
         private const string kStopSwitchParsing = "--";
         private readonly SwitchResult[] _switches;
-        public ArrayList NonSwitchStrings = new ArrayList();
+        public readonly ArrayList NonSwitchStrings = new ArrayList();
 
         public Parser(int numSwitches) {
             _switches = new SwitchResult[numSwitches];
@@ -257,8 +257,8 @@ namespace SevenZip.CommandLineParser {
     }
 
     public class CommandForm {
-        public string IDString = "";
-        public bool PostStringMode;
+        public readonly string IDString = "";
+        public readonly bool PostStringMode;
 
         public CommandForm(string idString, bool postStringMode) {
             IDString = idString;
@@ -267,7 +267,7 @@ namespace SevenZip.CommandLineParser {
     }
 
     internal class CommandSubCharsSet {
-        public string Chars = "";
-        public bool EmptyAllowed = false;
+        public readonly string Chars = "";
+        public readonly bool EmptyAllowed = false;
     }
 }

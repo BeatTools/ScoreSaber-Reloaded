@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace ScoreSaber.Core.Daemons {
+namespace ScoreSaber.Core.Services {
     internal class ReplayService {
         private string _currentPlayId;
         private Recorder _replayRecorder;

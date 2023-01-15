@@ -3,6 +3,7 @@
 using BeatSaberMarkupLanguage;
 using HMUI;
 using ScoreSaber.Core.Data;
+using ScoreSaber.Core.Data.Internal;
 using ScoreSaber.Core.ReplaySystem.Data;
 using ScoreSaber.Core.ReplaySystem.Playback;
 using System;
@@ -47,8 +48,8 @@ namespace ScoreSaber.Core.ReplaySystem.UI {
             _imberUIPositionController = imberUIPositionController;
             _positions = Plugin.Settings.spectatorPositions.Select(sp => sp.name);
             _mainImberPanelView.Setup(initData.timeScale, 90, _positions.First(), _positions);
-            _imberScrubber.Setup(file.metadata.FailTime, file.metadata.Modifiers.Contains("NF"));
-            _initialTimeScale = file.noteKeyframes.FirstOrDefault().TimeSyncTimescale;
+            _imberScrubber.Setup(file.Metadata.FailTime, file.Metadata.Modifiers.Contains("NF"));
+            _initialTimeScale = file.NoteKeyframes.FirstOrDefault().TimeSyncTimescale;
         }
 
         public void Dispose() {

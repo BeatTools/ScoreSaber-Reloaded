@@ -12,10 +12,10 @@ using System.Reflection.Emit;
 
 namespace ScoreSaber.Core.ReplaySystem.HarmonyPatches {
     internal class CancelScoreControllerBufferFinisher : IAffinity {
-        private static readonly FieldInfo _multScore =
+        private static readonly FieldInfo MultScore =
             typeof(ScoreController).GetField("_multipliedScore", BindingFlags.Instance | BindingFlags.NonPublic);
 
-        private static readonly FieldInfo _immediateScore =
+        private static readonly FieldInfo ImmediateScore =
             typeof(ScoreController).GetField("_immediateMaxPossibleMultipliedScore",
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -37,13 +37,13 @@ namespace ScoreSaber.Core.ReplaySystem.HarmonyPatches {
 #pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
             for (int i = 0; i < codes.Count; i++) {
                 if (!startIndex.HasValue) {
-                    if (codes[i].opcode == OpCodes.Ldfld && codes[i].operand == _multScore) {
+                    if (codes[i].opcode == OpCodes.Ldfld && codes[i].operand == MultScore) {
                         startIndex = i - 1;
                         count = 2;
                     }
                 } else if (!endIndex.HasValue) {
                     count++;
-                    if (codes[i].opcode == OpCodes.Stfld && codes[i].operand == _immediateScore) {
+                    if (codes[i].opcode == OpCodes.Stfld && codes[i].operand == ImmediateScore) {
                         endIndex = i;
                     }
                 } else {

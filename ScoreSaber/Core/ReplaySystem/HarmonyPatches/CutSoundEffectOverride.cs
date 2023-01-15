@@ -12,14 +12,14 @@ namespace ScoreSaber.Core.ReplaySystem.HarmonyPatches {
     internal class CutSoundEffectOverride {
         private static IEnumerator _buffer;
         private static NoteCutSoundEffectManager _spawnEffectManager;
-        private static readonly Queue<NoteController> _effects = new Queue<NoteController>();
+        private static readonly Queue<NoteController> Effects = new Queue<NoteController>();
         internal static bool Buffer { get; set; }
 
-        internal static bool Prefix(NoteCutSoundEffectManager __instance, NoteController noteController) {
+        internal static bool Prefix(NoteCutSoundEffectManager instance, NoteController noteController) {
             if (Plugin.ReplayState.IsPlaybackEnabled && !Plugin.ReplayState.IsLegacyReplay) {
-                if (_spawnEffectManager == null || _spawnEffectManager != __instance) {
-                    _spawnEffectManager = __instance;
-                    _effects.Clear();
+                if (_spawnEffectManager == null || _spawnEffectManager != instance) {
+                    _spawnEffectManager = instance;
+                    Effects.Clear();
                     _buffer = null;
                     Buffer = false;
                     return true;
@@ -29,11 +29,11 @@ namespace ScoreSaber.Core.ReplaySystem.HarmonyPatches {
                     return true;
                 }
 
-                if (!_effects.Contains(noteController)) {
-                    _effects.Enqueue(noteController);
+                if (!Effects.Contains(noteController)) {
+                    Effects.Enqueue(noteController);
                     if (_buffer == null) {
-                        _buffer = BufferNoteSpawn(__instance);
-                        __instance.StartCoroutine(_buffer);
+                        _buffer = BufferNoteSpawn(instance);
+                        instance.StartCoroutine(_buffer);
                     }
 
                     return false;
@@ -46,10 +46,10 @@ namespace ScoreSaber.Core.ReplaySystem.HarmonyPatches {
         }
 
         private static IEnumerator BufferNoteSpawn(NoteCutSoundEffectManager manager) {
-            while (_effects.Count > 0) {
-                NoteController effect = _effects.Peek();
+            while (Effects.Count > 0) {
+                NoteController effect = Effects.Peek();
                 manager.HandleNoteWasSpawned(effect);
-                _effects.Dequeue();
+                Effects.Dequeue();
                 yield return new WaitForEndOfFrame();
             }
 

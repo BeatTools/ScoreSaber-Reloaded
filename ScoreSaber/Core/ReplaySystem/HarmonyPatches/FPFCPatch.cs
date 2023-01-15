@@ -7,19 +7,19 @@ using SiraUtil.Attributes;
 
 namespace ScoreSaber.Core.ReplaySystem.HarmonyPatches {
     [Bind]
-    internal class FPFCPatch : IAffinity {
+    internal class FpfcPatch : IAffinity {
         private readonly bool _isOculus;
         private readonly IVRPlatformHelper _vrPlatformHelper;
 
-        public FPFCPatch(IVRPlatformHelper vrPlatformHelper) {
+        public FpfcPatch(IVRPlatformHelper vrPlatformHelper) {
             _vrPlatformHelper = vrPlatformHelper;
             _isOculus = _vrPlatformHelper is OculusVRHelper;
         }
 
         [AffinityPatch(typeof(OculusVRHelper), nameof(OculusVRHelper.hasInputFocus), AffinityMethodType.Getter)]
-        protected void ForceInputFocus(ref bool __result) {
+        protected void ForceInputFocus(ref bool result) {
             if (_isOculus && Plugin.ReplayState.IsPlaybackEnabled) {
-                __result = true;
+                result = true;
             }
         }
     }

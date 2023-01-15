@@ -10,7 +10,7 @@ using Zenject;
 #endregion
 
 // Unused
-namespace ScoreSaber.UI.ViewControllers {
+namespace ScoreSaber.UI {
     internal class MenuButtonView : IInitializable, IDisposable {
         private readonly MainFlowCoordinator _mainFlowCoordinator;
 

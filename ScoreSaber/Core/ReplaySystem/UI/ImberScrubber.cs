@@ -166,19 +166,18 @@ namespace ScoreSaber.Core.ReplaySystem.UI {
 
             //GameObject uwu = new GameObject("Imber Container");
             //uwu.transform.SetParent(rectTransformBar);
-            RectTransform rectTransform = rectTransformBar; // uwu.gameObject.AddComponent<RectTransform>();
             //rectTransform.sizeDelta = size;
 
             // Create the backwall for proper raycast events.
-            ImageView borderElement = CreateImage(rectTransform);
+            ImageView borderElement = CreateImage(rectTransformBar);
             borderElement.rectTransform.anchorMin = Vector3.zero;
             borderElement.rectTransform.anchorMax = Vector3.one;
-            borderElement.rectTransform.sizeDelta = rectTransform.sizeDelta * 1.5f;
+            borderElement.rectTransform.sizeDelta = rectTransformBar.sizeDelta * 1.5f;
             borderElement.color = Color.clear;
             borderElement.name = "Box Border";
 
             // Create the background bar image
-            ImageView backgroundImage = CreateImage(rectTransform);
+            ImageView backgroundImage = CreateImage(rectTransformBar);
             backgroundImage.rectTransform.sizeDelta = barSize;
             backgroundImage.rectTransform.anchorMin = new Vector2(0f, 0.5f);
             backgroundImage.rectTransform.anchorMax = new Vector2(1f, 0.5f);
@@ -186,7 +185,7 @@ namespace ScoreSaber.Core.ReplaySystem.UI {
             backgroundImage.name = "Background Bar";
 
             // Create the progress bar image
-            ImageView progressImage = CreateImage(rectTransform);
+            ImageView progressImage = CreateImage(rectTransformBar);
             progressImage.rectTransform.sizeDelta = barSize;
             progressImage.rectTransform.anchorMin = new Vector2(0f, 0.5f);
             progressImage.rectTransform.anchorMax = new Vector2(0f, 0.5f);
@@ -194,7 +193,7 @@ namespace ScoreSaber.Core.ReplaySystem.UI {
                 _scoreSaberBlue; // SCORESABER BLUE IS SET HERE SLKJDFLKSDFGJKLDFGJ SDLFKG JSDLFKG JSDLKFG JLSDFKGJ LSKDFGJ LKSDFGJ LKSDFG JLSDKGF
             progressImage.name = "Progress Bar";
 
-            ImageView clickScrubImage = CreateImage(rectTransform);
+            ImageView clickScrubImage = CreateImage(rectTransformBar);
             clickScrubImage.rectTransform.sizeDelta = new Vector2(barSize.x, barSize.y * 2.25f);
             clickScrubImage.rectTransform.anchorMin = new Vector2(0f, 0.5f);
             clickScrubImage.rectTransform.anchorMax = new Vector2(1f, 0.5f);
@@ -204,7 +203,7 @@ namespace ScoreSaber.Core.ReplaySystem.UI {
             clickScrubImage.name = "Box Click Scrubber";
 
             // Create the bar
-            AmeBar bar = rectTransform.gameObject.AddComponent<AmeBar>();
+            AmeBar bar = rectTransformBar.gameObject.AddComponent<AmeBar>();
             bar.Setup(progressImage.rectTransform, backgroundImage.rectTransform);
 
             return bar;

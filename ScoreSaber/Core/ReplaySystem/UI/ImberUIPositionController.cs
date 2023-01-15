@@ -2,6 +2,7 @@
 
 using HMUI;
 using ScoreSaber.Core.Data;
+using ScoreSaber.Core.Data.Internal;
 using System;
 using System.Collections;
 using UnityEngine;

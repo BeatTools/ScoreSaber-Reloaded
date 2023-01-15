@@ -5,7 +5,7 @@ using System.IO;
 
 #endregion
 
-namespace SevenZip {
+namespace ScoreSaber.Libraries.SevenZip {
     /// <summary>
     ///     The exception that is thrown when an error in input stream occurs during decoding.
     /// </summary>

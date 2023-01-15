@@ -95,10 +95,10 @@ namespace ScoreSaber.Core.ReplaySystem {
             ModifierPanelsSO =
                 FieldAccessor<ScoreController, List<GameplayModifierParamsSO>>.GetAccessor("_gameplayModifierParams");
 
-        internal static PropertyAccessor<RelativeScoreAndImmediateRankCounter, RankModel.Rank>.Setter ImmediateRank =
+        internal static readonly PropertyAccessor<RelativeScoreAndImmediateRankCounter, RankModel.Rank>.Setter ImmediateRank =
             PropertyAccessor<RelativeScoreAndImmediateRankCounter, RankModel.Rank>.GetSetter("immediateRank");
 
-        internal static PropertyAccessor<RelativeScoreAndImmediateRankCounter, float>.Setter RelativeScore =
+        internal static readonly PropertyAccessor<RelativeScoreAndImmediateRankCounter, float>.Setter RelativeScore =
             PropertyAccessor<RelativeScoreAndImmediateRankCounter, float>.GetSetter("relativeScore");
 
         internal static readonly FieldAccessor<MenuTransitionsHelper, StandardLevelScenesTransitionSetupDataSO>.Accessor

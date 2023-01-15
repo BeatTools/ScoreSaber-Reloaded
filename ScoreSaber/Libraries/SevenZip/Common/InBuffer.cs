@@ -4,7 +4,7 @@ using System.IO;
 
 #endregion
 
-namespace SevenZip.Buffer {
+namespace ScoreSaber.Libraries.SevenZip.Common {
     public class InBuffer {
         private readonly byte[] m_Buffer;
         private readonly uint m_BufferSize;

@@ -1,4 +1,4 @@
-namespace SevenZip.Compression.LZMA {
+namespace ScoreSaber.Libraries.SevenZip.Compress.LZMA {
     internal abstract class Base {
         public const uint kNumRepDistances = 4;
         public const uint kNumStates = 12;

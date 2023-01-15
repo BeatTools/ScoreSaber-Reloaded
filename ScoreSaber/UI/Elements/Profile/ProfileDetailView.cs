@@ -7,7 +7,6 @@ using ScoreSaber.Core.Data.Models;
 using ScoreSaber.Core.Services;
 using ScoreSaber.Core.Utils;
 using ScoreSaber.UI.Leaderboard;
-using ScoreSaber.UI.Other;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

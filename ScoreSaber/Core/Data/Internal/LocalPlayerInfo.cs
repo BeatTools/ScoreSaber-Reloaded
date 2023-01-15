@@ -1,4 +1,4 @@
-﻿namespace ScoreSaber.Core.Data {
+﻿namespace ScoreSaber.Core.Data.Internal {
     internal class LocalPlayerInfo {
         internal LocalPlayerInfo(string _playerId, string _playerName, string _playerFriends, string _authType,
             string _playerNonce) {

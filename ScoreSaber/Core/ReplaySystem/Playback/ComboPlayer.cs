@@ -18,16 +18,18 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
         public ComboPlayer(ReplayFile file, ComboController comboController, ComboUIController comboUIController) {
             _comboController = comboController;
             _comboUIController = comboUIController;
-            _sortedNoteEvents = file.noteKeyframes.ToArray();
-            _sortedComboEvents = file.comboKeyframes.ToArray();
+            _sortedNoteEvents = file.NoteKeyframes.ToArray();
+            _sortedComboEvents = file.ComboKeyframes.ToArray();
         }
 
         public void TimeUpdate(float newTime) {
             for (int c = 0; c < _sortedComboEvents.Length; c++) {
-                if (_sortedComboEvents[c].Time >= newTime) {
-                    UpdateCombo(newTime, c != 0 ? _sortedComboEvents[c - 1].Combo : 0);
-                    return;
+                if (!(_sortedComboEvents[c].Time >= newTime)) {
+                    continue;
                 }
+
+                UpdateCombo(newTime, c != 0 ? _sortedComboEvents[c - 1].Combo : 0);
+                return;
             }
 
             UpdateCombo(newTime, _sortedComboEvents.LastOrDefault().Combo);

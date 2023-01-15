@@ -1,4 +1,4 @@
-namespace SevenZip {
+namespace ScoreSaber.Libraries.SevenZip.Common {
     public class CRC {
         public static readonly uint[] Table;
 

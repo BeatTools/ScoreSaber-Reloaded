@@ -1,4 +1,4 @@
-namespace SevenZip.Compression.RangeCoder {
+namespace ScoreSaber.Libraries.SevenZip.Compress.RangeCoder {
     internal struct BitTreeEncoder {
         private readonly BitEncoder[] Models;
         private readonly int NumBitLevels;

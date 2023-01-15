@@ -16,7 +16,7 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
 
         protected HeightPlayer(ReplayFile file, PlayerHeightDetector playerHeightDetector) {
             _playerHeightDetector = playerHeightDetector;
-            _sortedHeightEvents = file.heightKeyframes.ToArray();
+            _sortedHeightEvents = file.HeightKeyframes.ToArray();
         }
 
         public void Initialize() {
@@ -25,11 +25,13 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
 
         public void TimeUpdate(float newTime) {
             for (int c = 0; c < _sortedHeightEvents.Length; c++) {
-                if (_sortedHeightEvents[c].Time >= newTime) {
-                    _lastIndex = c;
-                    Tick();
-                    return;
+                if (!(_sortedHeightEvents[c].Time >= newTime)) {
+                    continue;
                 }
+
+                _lastIndex = c;
+                Tick();
+                return;
             }
 
             FieldAccessor<PlayerHeightDetector, Action<float>>.Get(_playerHeightDetector, "playerHeightDidChangeEvent")
@@ -42,11 +44,13 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
             }
 
             HeightEvent activeEvent = _sortedHeightEvents[_lastIndex];
-            if (audioTimeSyncController.songEndTime >= activeEvent.Time) {
-                _lastIndex++;
-                FieldAccessor<PlayerHeightDetector, Action<float>>
-                    .Get(_playerHeightDetector, "playerHeightDidChangeEvent").Invoke(activeEvent.Height);
+            if (!(audioTimeSyncController.songEndTime >= activeEvent.Time)) {
+                return;
             }
+
+            _lastIndex++;
+            FieldAccessor<PlayerHeightDetector, Action<float>>
+                .Get(_playerHeightDetector, "playerHeightDidChangeEvent").Invoke(activeEvent.Height);
         }
     }
 }

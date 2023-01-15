@@ -49,70 +49,83 @@ namespace ScoreSaber.Core.ReplaySystem.Recorders {
                 ColorType = (int)noteData.colorType, CutDirection = (int)noteData.cutDirection
             };
 
-            if (element is GoodCutScoringElement goodCut) {
-                float cutTime = _scoringStartInfo[goodCut];
-                NoteCutInfo noteCutInfo = goodCut.cutScoreBuffer.noteCutInfo;
-                _scoringStartInfo.Remove(goodCut);
+            switch (element)
+            {
+                case GoodCutScoringElement goodCut:
+                {
+                    float cutTime = _scoringStartInfo[goodCut];
+                    NoteCutInfo noteCutInfo = goodCut.cutScoreBuffer.noteCutInfo;
+                    _scoringStartInfo.Remove(goodCut);
 
-                _noteKeyframes.Add(new NoteEvent {
-                    NoteID = noteID,
-                    EventType = NoteEventType.GoodCut,
-                    CutPoint = noteCutInfo.cutPoint.Convert(),
-                    CutNormal = noteCutInfo.cutNormal.Convert(),
-                    SaberDirection = noteCutInfo.saberDir.Convert(),
-                    SaberType = (int)noteCutInfo.saberType,
-                    DirectionOK = noteCutInfo.directionOK,
-                    CutDirectionDeviation = noteCutInfo.cutDirDeviation,
-                    SaberSpeed = noteCutInfo.saberSpeed,
-                    CutAngle = noteCutInfo.cutAngle,
-                    CutDistanceToCenter = noteCutInfo.cutDistanceToCenter,
-                    BeforeCutRating = goodCut.cutScoreBuffer.beforeCutSwingRating,
-                    AfterCutRating = goodCut.cutScoreBuffer.afterCutSwingRating,
-                    Time = cutTime,
-                    UnityTimescale = Time.timeScale,
-                    TimeSyncTimescale = audioTimeSyncController.timeScale
-                });
-            } else if (element is BadCutScoringElement badCut) {
-                NoteEventType badCutEventType =
-                    noteData.colorType == ColorType.None ? NoteEventType.Bomb : NoteEventType.BadCut;
-                NoteCutInfo noteCutInfo = _collectedBadCutInfos[badCut.noteData];
-                _collectedBadCutInfos.Remove(badCut.noteData);
-                _noteKeyframes.Add(new NoteEvent {
-                    NoteID = noteID,
-                    EventType = badCutEventType,
-                    CutPoint = noteCutInfo.cutPoint.Convert(),
-                    CutNormal = noteCutInfo.cutNormal.Convert(),
-                    SaberDirection = noteCutInfo.saberDir.Convert(),
-                    SaberType = (int)noteCutInfo.saberType,
-                    DirectionOK = noteCutInfo.directionOK,
-                    CutDirectionDeviation = noteCutInfo.cutDirDeviation,
-                    SaberSpeed = noteCutInfo.saberSpeed,
-                    CutAngle = noteCutInfo.cutAngle,
-                    CutDistanceToCenter = noteCutInfo.cutDistanceToCenter,
-                    BeforeCutRating = 0f,
-                    AfterCutRating = 0f,
-                    Time = audioTimeSyncController.songTime,
-                    UnityTimescale = Time.timeScale,
-                    TimeSyncTimescale = audioTimeSyncController.timeScale
-                });
-            } else if (noteData.colorType != ColorType.None /* not bomb */ && element is MissScoringElement) {
-                _noteKeyframes.Add(new NoteEvent {
-                    NoteID = noteID,
-                    EventType = NoteEventType.Miss,
-                    CutPoint = VRPosition.None(),
-                    CutNormal = VRPosition.None(),
-                    SaberDirection = VRPosition.None(),
-                    SaberType = (int)noteData.colorType,
-                    DirectionOK = false, CutDirectionDeviation = 0f,
-                    SaberSpeed = 0f,
-                    CutAngle = 0f,
-                    CutDistanceToCenter = 0f,
-                    BeforeCutRating = 0f,
-                    AfterCutRating = 0f,
-                    Time = audioTimeSyncController.songTime,
-                    UnityTimescale = Time.timeScale,
-                    TimeSyncTimescale = audioTimeSyncController.timeScale
-                });
+                    _noteKeyframes.Add(new NoteEvent {
+                        NoteID = noteID,
+                        EventType = NoteEventType.GoodCut,
+                        CutPoint = noteCutInfo.cutPoint.Convert(),
+                        CutNormal = noteCutInfo.cutNormal.Convert(),
+                        SaberDirection = noteCutInfo.saberDir.Convert(),
+                        SaberType = (int)noteCutInfo.saberType,
+                        DirectionOk = noteCutInfo.directionOK,
+                        CutDirectionDeviation = noteCutInfo.cutDirDeviation,
+                        SaberSpeed = noteCutInfo.saberSpeed,
+                        CutAngle = noteCutInfo.cutAngle,
+                        CutDistanceToCenter = noteCutInfo.cutDistanceToCenter,
+                        BeforeCutRating = goodCut.cutScoreBuffer.beforeCutSwingRating,
+                        AfterCutRating = goodCut.cutScoreBuffer.afterCutSwingRating,
+                        Time = cutTime,
+                        UnityTimescale = Time.timeScale,
+                        TimeSyncTimescale = audioTimeSyncController.timeScale
+                    });
+                    break;
+                }
+                case BadCutScoringElement badCut:
+                {
+                    NoteEventType badCutEventType =
+                        noteData.colorType == ColorType.None ? NoteEventType.Bomb : NoteEventType.BadCut;
+                    NoteCutInfo noteCutInfo = _collectedBadCutInfos[badCut.noteData];
+                    _collectedBadCutInfos.Remove(badCut.noteData);
+                    _noteKeyframes.Add(new NoteEvent {
+                        NoteID = noteID,
+                        EventType = badCutEventType,
+                        CutPoint = noteCutInfo.cutPoint.Convert(),
+                        CutNormal = noteCutInfo.cutNormal.Convert(),
+                        SaberDirection = noteCutInfo.saberDir.Convert(),
+                        SaberType = (int)noteCutInfo.saberType,
+                        DirectionOk = noteCutInfo.directionOK,
+                        CutDirectionDeviation = noteCutInfo.cutDirDeviation,
+                        SaberSpeed = noteCutInfo.saberSpeed,
+                        CutAngle = noteCutInfo.cutAngle,
+                        CutDistanceToCenter = noteCutInfo.cutDistanceToCenter,
+                        BeforeCutRating = 0f,
+                        AfterCutRating = 0f,
+                        Time = audioTimeSyncController.songTime,
+                        UnityTimescale = Time.timeScale,
+                        TimeSyncTimescale = audioTimeSyncController.timeScale
+                    });
+                    break;
+                }
+                default: {
+                    if (noteData.colorType != ColorType.None /* not bomb */ && element is MissScoringElement) {
+                        _noteKeyframes.Add(new NoteEvent {
+                            NoteID = noteID,
+                            EventType = NoteEventType.Miss,
+                            CutPoint = VRPosition.None(),
+                            CutNormal = VRPosition.None(),
+                            SaberDirection = VRPosition.None(),
+                            SaberType = (int)noteData.colorType,
+                            DirectionOk = false, CutDirectionDeviation = 0f,
+                            SaberSpeed = 0f,
+                            CutAngle = 0f,
+                            CutDistanceToCenter = 0f,
+                            BeforeCutRating = 0f,
+                            AfterCutRating = 0f,
+                            Time = audioTimeSyncController.songTime,
+                            UnityTimescale = Time.timeScale,
+                            TimeSyncTimescale = audioTimeSyncController.timeScale
+                        });
+                    }
+
+                    break;
+                }
             }
         }
 

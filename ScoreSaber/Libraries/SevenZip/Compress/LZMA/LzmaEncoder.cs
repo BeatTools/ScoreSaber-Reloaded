@@ -1,13 +1,13 @@
 #region
 
-using SevenZip.Compression.LZ;
-using SevenZip.Compression.RangeCoder;
+using ScoreSaber.Libraries.SevenZip.Compress.LZ;
+using ScoreSaber.Libraries.SevenZip.Compress.RangeCoder;
 using System;
 using System.IO;
 
 #endregion
 
-namespace SevenZip.Compression.LZMA {
+namespace ScoreSaber.Libraries.SevenZip.Compress.LZMA {
     public class Encoder : ICoder, ISetCoderProperties, IWriteCoderProperties {
         private const uint kIfinityPrice = 0xFFFFFFF;
 

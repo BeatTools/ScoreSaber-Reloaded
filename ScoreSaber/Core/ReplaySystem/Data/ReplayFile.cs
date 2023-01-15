@@ -9,23 +9,23 @@ using UnityEngine;
 #pragma warning disable IDE1006 // Naming Styles
 namespace ScoreSaber.Core.ReplaySystem.Data {
     internal class ReplayFile {
-        internal List<ComboEvent> comboKeyframes;
-        internal List<EnergyEvent> energyKeyframes;
-        internal List<HeightEvent> heightKeyframes;
-        internal Metadata metadata;
-        internal List<MultiplierEvent> multiplierKeyframes;
-        internal List<NoteEvent> noteKeyframes;
-        internal List<VRPoseGroup> poseKeyframes;
-        internal List<ScoreEvent> scoreKeyframes;
+        internal List<ComboEvent> ComboKeyframes;
+        internal List<EnergyEvent> EnergyKeyframes;
+        internal List<HeightEvent> HeightKeyframes;
+        internal Metadata Metadata;
+        internal List<MultiplierEvent> MultiplierKeyframes;
+        internal List<NoteEvent> NoteKeyframes;
+        internal List<VRPoseGroup> PoseKeyframes;
+        internal List<ScoreEvent> ScoreKeyframes;
 
         internal ReplayFile() {
-            poseKeyframes = new List<VRPoseGroup>();
-            heightKeyframes = new List<HeightEvent>();
-            noteKeyframes = new List<NoteEvent>();
-            scoreKeyframes = new List<ScoreEvent>();
-            comboKeyframes = new List<ComboEvent>();
-            multiplierKeyframes = new List<MultiplierEvent>();
-            energyKeyframes = new List<EnergyEvent>();
+            PoseKeyframes = new List<VRPoseGroup>();
+            HeightKeyframes = new List<HeightEvent>();
+            NoteKeyframes = new List<NoteEvent>();
+            ScoreKeyframes = new List<ScoreEvent>();
+            ComboKeyframes = new List<ComboEvent>();
+            MultiplierKeyframes = new List<MultiplierEvent>();
+            EnergyKeyframes = new List<EnergyEvent>();
         }
     }
 
@@ -61,7 +61,7 @@ namespace ScoreSaber.Core.ReplaySystem.Data {
         internal VRPosition CutNormal;
         internal VRPosition SaberDirection;
         internal int SaberType;
-        internal bool DirectionOK;
+        internal bool DirectionOk;
         internal float SaberSpeed;
         internal float CutAngle;
         internal float CutDistanceToCenter;

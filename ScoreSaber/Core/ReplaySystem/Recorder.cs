@@ -3,6 +3,7 @@
 using ScoreSaber.Core.Daemons;
 using ScoreSaber.Core.ReplaySystem.Data;
 using ScoreSaber.Core.ReplaySystem.Recorders;
+using ScoreSaber.Core.Services;
 using System;
 using Zenject;
 
@@ -44,14 +45,14 @@ namespace ScoreSaber.Core.ReplaySystem {
 
         public ReplayFile Export() {
             return new ReplayFile {
-                metadata = _metadataRecorder.Export(),
-                poseKeyframes = _poseRecorder.Export(),
-                heightKeyframes = _heightEventRecorder.Export(),
-                noteKeyframes = _noteEventRecorder.Export(),
-                scoreKeyframes = _scoreEventRecorder.ExportScoreKeyframes(),
-                comboKeyframes = _scoreEventRecorder.ExportComboKeyframes(),
-                multiplierKeyframes = _scoreEventRecorder.ExportMultiplierKeyframes(),
-                energyKeyframes = _energyEventRecorder.Export()
+                Metadata = _metadataRecorder.Export(),
+                PoseKeyframes = _poseRecorder.Export(),
+                HeightKeyframes = _heightEventRecorder.Export(),
+                NoteKeyframes = _noteEventRecorder.Export(),
+                ScoreKeyframes = _scoreEventRecorder.ExportScoreKeyframes(),
+                ComboKeyframes = _scoreEventRecorder.ExportComboKeyframes(),
+                MultiplierKeyframes = _scoreEventRecorder.ExportMultiplierKeyframes(),
+                EnergyKeyframes = _energyEventRecorder.Export()
             };
         }
     }

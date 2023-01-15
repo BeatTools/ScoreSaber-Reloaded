@@ -1,11 +1,12 @@
 #region
 
+using ScoreSaber.Libraries.SevenZip.Compress.LZMA;
 using System;
 using System.IO;
 
 #endregion
 
-namespace SevenZip.Compression.LZMA {
+namespace ScoreSaber.Libraries.SevenZip.Compress.LzmaAlone {
     public static class SevenZipHelper {
         private static readonly int dictionary = 1 << 23;
 

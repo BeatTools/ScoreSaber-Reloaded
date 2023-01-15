@@ -1,14 +1,13 @@
 ﻿#region
 
 using HarmonyLib;
-using ScoreSaber.Core.ReplaySystem.Legacy;
 using SiraUtil.Affinity;
 using UnityEngine;
 using Zenject;
 
 #endregion
 
-namespace ScoreSaber.Patches {
+namespace ScoreSaber.Core.ReplaySystem.Legacy {
     internal class LegacyReplayPatches : IInitializable, IAffinity {
         private readonly LegacyReplayPlayer _legacyReplayPlayer;
 
@@ -21,11 +20,13 @@ namespace ScoreSaber.Patches {
         [AffinityPatch(typeof(ScoreController), nameof(ScoreController.HandleNoteWasCut))]
         [AffinityPrefix]
         private void PatchNoteWasCut(NoteController noteController) {
-            if (Plugin.ReplayState.IsPlaybackEnabled && Plugin.ReplayState.IsLegacyReplay) {
-                NoteData noteData = noteController.noteData;
-                if (noteData.colorType != ColorType.None) {
-                    _legacyReplayPlayer.cutOrMissedNotes++;
-                }
+            if (!Plugin.ReplayState.IsPlaybackEnabled || !Plugin.ReplayState.IsLegacyReplay) {
+                return;
+            }
+
+            NoteData noteData = noteController.noteData;
+            if (noteData.colorType != ColorType.None) {
+                _legacyReplayPlayer.cutOrMissedNotes++;
             }
         }
 

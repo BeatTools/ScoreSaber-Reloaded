@@ -12,7 +12,7 @@ namespace ScoreSaber.Core.ReplaySystem.Recorders {
     internal class MetadataRecorder : TimeSynchronizer, IInitializable, IDisposable {
         private readonly IGameEnergyCounter _gameEnergyCounter;
         private readonly GameplayCoreSceneSetupData _gameplayCoreSceneSetupData;
-        private readonly MainSettingsModelSO _mainSettingsModelSO;
+        private readonly MainSettingsModelSO _mainSettingsModelSo;
         private readonly BeatmapObjectSpawnController.InitData _beatmapObjectSpawnControllerInitData;
         private float _failTime;
 
@@ -20,7 +20,7 @@ namespace ScoreSaber.Core.ReplaySystem.Recorders {
             BeatmapObjectSpawnController.InitData beatmapObjectSpawnControllerInitData,
             IGameEnergyCounter gameEnergyCounter) {
             _beatmapObjectSpawnControllerInitData = beatmapObjectSpawnControllerInitData;
-            _mainSettingsModelSO = Resources.FindObjectsOfTypeAll<MainSettingsModelSO>()[0];
+            _mainSettingsModelSo = Resources.FindObjectsOfTypeAll<MainSettingsModelSO>()[0];
             _gameEnergyCounter = gameEnergyCounter;
             _gameplayCoreSceneSetupData = gameplayCoreSceneSetupData;
         }
@@ -41,9 +41,9 @@ namespace ScoreSaber.Core.ReplaySystem.Recorders {
 
         public Metadata Export() {
             VRPosition roomCenter = new VRPosition {
-                X = _mainSettingsModelSO.roomCenter.value.x,
-                Y = _mainSettingsModelSO.roomCenter.value.y,
-                Z = _mainSettingsModelSO.roomCenter.value.z
+                X = _mainSettingsModelSo.roomCenter.value.x,
+                Y = _mainSettingsModelSo.roomCenter.value.y,
+                Z = _mainSettingsModelSo.roomCenter.value.z
             };
 
             return new Metadata {
@@ -57,13 +57,13 @@ namespace ScoreSaber.Core.ReplaySystem.Recorders {
                 NoteSpawnOffset = _beatmapObjectSpawnControllerInitData.noteJumpValue,
                 LeftHanded = _gameplayCoreSceneSetupData.playerSpecificSettings.leftHanded,
                 InitialHeight = _gameplayCoreSceneSetupData.playerSpecificSettings.playerHeight,
-                RoomRotation = _mainSettingsModelSO.roomRotation,
+                RoomRotation = _mainSettingsModelSo.roomRotation,
                 RoomCenter = roomCenter,
                 FailTime = _failTime
             };
         }
 
-        public string[] GetModifierList(GameplayModifiers modifiers) {
+        private static string[] GetModifierList(GameplayModifiers modifiers) {
             List<string> result = new List<string>();
             if (modifiers.energyType == GameplayModifiers.EnergyType.Battery) {
                 result.Add("BE");

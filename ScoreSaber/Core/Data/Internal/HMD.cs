@@ -8,19 +8,19 @@ using UnityEngine.XR;
 
 #endregion
 
-namespace ScoreSaber.Core.Data {
+namespace ScoreSaber.Core.Data.Internal {
     internal static class HMD {
-        internal static int Unknown = 0;
-        internal static int CV1 = 1;
-        internal static int Vive = 2;
-        internal static int VivePro = 4;
-        internal static int Windows = 8;
-        internal static int RiftS = 16;
-        internal static int Quest = 32;
-        internal static int Index = 64;
-        internal static int Cosmos = 128;
+        internal static readonly int Unknown = 0;
+        internal static readonly int CV1 = 1;
+        internal static readonly int Vive = 2;
+        internal static readonly int VivePro = 4;
+        internal static readonly int Windows = 8;
+        internal static readonly int RiftS = 16;
+        internal static readonly int Quest = 32;
+        internal static readonly int Index = 64;
+        internal static readonly int Cosmos = 128;
 
-        internal static string[] WMRBrands = {
+        internal static readonly string[] WMRBrands = {
             "lenovo",
             "microsoft",
             "acer",

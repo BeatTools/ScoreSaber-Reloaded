@@ -4,7 +4,7 @@ using System.IO;
 
 #endregion
 
-namespace SevenZip.Compression.LZ {
+namespace ScoreSaber.Libraries.SevenZip.Compress.LZ {
     internal interface IInWindowStream {
         void SetStream(Stream inStream);
         void Init();

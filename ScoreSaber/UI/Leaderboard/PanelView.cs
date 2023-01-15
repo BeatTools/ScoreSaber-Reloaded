@@ -8,6 +8,7 @@ using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using IPA.Utilities;
 using ScoreSaber.Core.Data;
+using ScoreSaber.Core.Data.Internal;
 using ScoreSaber.Core.Data.Models;
 using ScoreSaber.Core.Services;
 using ScoreSaber.Extensions;

@@ -4,7 +4,7 @@ using System.IO;
 
 #endregion
 
-namespace SevenZip.Compression.LZ {
+namespace ScoreSaber.Libraries.SevenZip.Compress.LZ {
     public class InWindow {
         public uint _blockSize; // Size of Allocated memory block
         public byte[] _bufferBase; // pointer to buffer with data

@@ -16,7 +16,7 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
     internal class PosePlayer : TimeSynchronizer, IInitializable, ITickable, IScroller, IDisposable {
         private readonly IFPFCSettings _fpfcSettings;
         private readonly MainCamera _mainCamera;
-        private readonly MainSettingsModelSO _mainSettingsModelSO;
+        private readonly MainSettingsModelSO _mainSettingsModelSo;
         private readonly IReturnToMenuController _returnToMenuController;
         private readonly SaberManager _saberManager;
         private readonly VRPoseGroup[] _sortedPoses;
@@ -27,27 +27,27 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
         private Camera _spectatorCamera;
         private Vector3 _spectatorOffset;
 
-        private readonly bool initialFPFCState;
+        private readonly bool _initialFpfcState;
 
         public PosePlayer(ReplayFile file, MainCamera mainCamera, SaberManager saberManager,
             IReturnToMenuController returnToMenuController, IFPFCSettings fpfcSettings,
             PlayerTransforms playerTransforms) {
             _fpfcSettings = fpfcSettings;
-            initialFPFCState = fpfcSettings.Enabled;
+            _initialFpfcState = fpfcSettings.Enabled;
             _fpfcSettings.Enabled = false;
 
             _mainCamera = mainCamera;
             _saberManager = saberManager;
-            _sortedPoses = file.poseKeyframes.ToArray();
+            _sortedPoses = file.PoseKeyframes.ToArray();
             _returnToMenuController = returnToMenuController;
             _spectatorOffset = new Vector3(0f, 0f, -2f);
-            _mainSettingsModelSO = Resources.FindObjectsOfTypeAll<MainSettingsModelSO>()[0];
+            _mainSettingsModelSo = Resources.FindObjectsOfTypeAll<MainSettingsModelSO>()[0];
             _playerTransforms = playerTransforms;
         }
 
         public void Dispose() {
             _fpfcSettings.Changed -= fpfcSettings_Changed;
-            _fpfcSettings.Enabled = initialFPFCState;
+            _fpfcSettings.Enabled = _initialFpfcState;
         }
 
         public void Initialize() {
@@ -125,11 +125,11 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
             GameObject spectatorObject = new GameObject("SpectatorParent");
             _spectatorCamera = Object.Instantiate(_desktopCamera);
             spectatorObject.transform.position = new Vector3(
-                _mainSettingsModelSO.roomCenter.value.x + _spectatorOffset.x,
-                _mainSettingsModelSO.roomCenter.value.y + _spectatorOffset.y,
-                _mainSettingsModelSO.roomCenter.value.z + _spectatorOffset.z);
+                _mainSettingsModelSo.roomCenter.value.x + _spectatorOffset.x,
+                _mainSettingsModelSo.roomCenter.value.y + _spectatorOffset.y,
+                _mainSettingsModelSo.roomCenter.value.z + _spectatorOffset.z);
             Quaternion rotation = new Quaternion {
-                eulerAngles = new Vector3(0.0f, _mainSettingsModelSO.roomRotation.value, 0.0f)
+                eulerAngles = new Vector3(0.0f, _mainSettingsModelSo.roomRotation.value, 0.0f)
             };
             _spectatorCamera.transform.rotation = rotation;
             _spectatorCamera.stereoTargetEye = StereoTargetEyeMask.Both;
@@ -203,8 +203,8 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
         }
 
         public void SetSpectatorOffset(Vector3 value) {
-            _spectatorCamera.transform.parent.position = new Vector3(_mainSettingsModelSO.roomCenter.value.x + value.x,
-                _mainSettingsModelSO.roomCenter.value.y + value.y, _mainSettingsModelSO.roomCenter.value.z + value.z);
+            _spectatorCamera.transform.parent.position = new Vector3(_mainSettingsModelSo.roomCenter.value.x + value.x,
+                _mainSettingsModelSo.roomCenter.value.y + value.y, _mainSettingsModelSo.roomCenter.value.z + value.z);
 
             _spectatorOffset = value;
         }

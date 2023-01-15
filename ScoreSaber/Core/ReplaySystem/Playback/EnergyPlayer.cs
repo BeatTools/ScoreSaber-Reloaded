@@ -18,18 +18,20 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
         public EnergyPlayer(ReplayFile file, GameEnergyCounter gameEnergyCounter, GameEnergyUIPanel gameEnergyUIPanel) {
             _gameEnergyCounter = gameEnergyCounter;
             _gameEnergyUIPanel = gameEnergyUIPanel;
-            _sortedEnergyEvents = file.energyKeyframes.ToArray();
+            _sortedEnergyEvents = file.EnergyKeyframes.ToArray();
         }
 
         public void TimeUpdate(float newTime) {
             if (_gameEnergyUIPanel == null) { return; }
 
             for (int c = 0; c < _sortedEnergyEvents.Length; c++) {
-                if (_sortedEnergyEvents[c].Time >= newTime) {
-                    float energy = c != 0 ? _sortedEnergyEvents[c - 1].Energy : 0.5f;
-                    UpdateEnergy(energy);
-                    return;
+                if (!(_sortedEnergyEvents[c].Time >= newTime)) {
+                    continue;
                 }
+
+                float energy = c != 0 ? _sortedEnergyEvents[c - 1].Energy : 0.5f;
+                UpdateEnergy(energy);
+                return;
             }
 
             UpdateEnergy(0.5f);

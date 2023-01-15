@@ -239,7 +239,7 @@ namespace ScoreSaber.UI.Leaderboard {
             PlatformLeaderboardsModel.ScoresScope scope, LoadingControl loadingControl, string refreshId) {
             try {
                 _currentLeaderboardRefreshId = refreshId;
-                if (_uploadDaemon.uploading) { return; }
+                if (_uploadDaemon.Uploading) { return; }
 
                 if (!activated) { return; }
 
@@ -293,7 +293,7 @@ namespace ScoreSaber.UI.Leaderboard {
                             loadingControl.ShowText("", false);
                             loadingControl.Hide();
                             _infoButtons.UpdateInfoButtonState(leaderboardTableScoreData.Count);
-                            if (_uploadDaemon.uploading) {
+                            if (_uploadDaemon.Uploading) {
                                 _panelView.DismissPrompt();
                             }
                         }

@@ -3,8 +3,9 @@
 using IPA.Utilities.Async;
 using ScoreSaber.Core.Daemons;
 using ScoreSaber.Core.ReplaySystem.Data;
+using ScoreSaber.Core.ReplaySystem.Legacy;
 using ScoreSaber.Core.Utils;
-using SevenZip.Compression.LZMA;
+using ScoreSaber.Libraries.SevenZip.Compress.LzmaAlone;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -114,8 +115,8 @@ namespace ScoreSaber.Core.ReplaySystem {
                 Plugin.ReplayState.LoadedReplayFile = replay;
                 PlayerData playerData = _playerDataModel.playerData;
                 PlayerSpecificSettings localPlayerSettings = playerData.playerSpecificSettings;
-                PlayerSpecificSettings playerSettings = new PlayerSpecificSettings(replay.metadata.LeftHanded,
-                    replay.metadata.InitialHeight, replay.heightKeyframes.Count > 0, localPlayerSettings.sfxVolume,
+                PlayerSpecificSettings playerSettings = new PlayerSpecificSettings(replay.Metadata.LeftHanded,
+                    replay.Metadata.InitialHeight, replay.HeightKeyframes.Count > 0, localPlayerSettings.sfxVolume,
                     localPlayerSettings.reduceDebris, localPlayerSettings.noTextsAndHuds,
                     localPlayerSettings.noFailEffects, localPlayerSettings.advancedHud, localPlayerSettings.autoRestart,
                     localPlayerSettings.saberTrailIntensity, localPlayerSettings.noteJumpDurationTypeSettings,
@@ -128,7 +129,7 @@ namespace ScoreSaber.Core.ReplaySystem {
                 UnityMainThreadTaskScheduler.Factory.StartNew(() => _menuTransitionsHelper.StartStandardLevel("Replay",
                     difficultyBeatmap, difficultyBeatmap.level,
                     playerData.overrideEnvironmentSettings, playerData.colorSchemesSettings.GetSelectedColorScheme(),
-                    LeaderboardUtils.GetModifierFromStrings(replay.metadata.Modifiers.ToArray(), false)
+                    LeaderboardUtils.GetModifierFromStrings(replay.Metadata.Modifiers.ToArray(), false)
                         .gameplayModifiers,
                     playerSettings, null, "Exit Replay", false, false, null, ReplayEnd, null));
             });

@@ -1,6 +1,6 @@
 ﻿#region
 
-using SevenZip.Compression.LZMA;
+using ScoreSaber.Libraries.SevenZip.Compress.LzmaAlone;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,15 +9,15 @@ using System.Text;
 
 namespace ScoreSaber.Core.ReplaySystem.Data {
     internal class Pointers {
-        internal int comboKeyframes;
-        internal int energyKeyframes;
-        internal int fpsKeyframes;
-        internal int heightKeyframes;
-        internal int metadata;
-        internal int multiplierKeyframes;
-        internal int noteKeyframes;
-        internal int poseKeyframes;
-        internal int scoreKeyframes;
+        internal int ComboKeyframes;
+        internal int EnergyKeyframes;
+        internal int FPSKeyframes;
+        internal int HeightKeyframes;
+        internal int Metadata;
+        internal int MultiplierKeyframes;
+        internal int NoteKeyframes;
+        internal int PoseKeyframes;
+        internal int ScoreKeyframes;
     }
 
     internal class ReplayFileReader {
@@ -32,14 +32,14 @@ namespace ScoreSaber.Core.ReplaySystem.Data {
             Pointers pointers = ReadPointers();
 
             ReplayFile file = new ReplayFile {
-                metadata = ReadMetadata(ref pointers.metadata),
-                poseKeyframes = ReadPoseGroupList(ref pointers.poseKeyframes),
-                heightKeyframes = ReadHeightChangeList(ref pointers.heightKeyframes),
-                noteKeyframes = ReadNoteEventList(ref pointers.noteKeyframes),
-                scoreKeyframes = ReadScoreEventList(ref pointers.scoreKeyframes),
-                comboKeyframes = ReadComboEventList(ref pointers.comboKeyframes),
-                multiplierKeyframes = ReadMultiplierEventList(ref pointers.multiplierKeyframes),
-                energyKeyframes = ReadEnergyEventList(ref pointers.energyKeyframes)
+                Metadata = ReadMetadata(ref pointers.Metadata),
+                PoseKeyframes = ReadPoseGroupList(ref pointers.PoseKeyframes),
+                HeightKeyframes = ReadHeightChangeList(ref pointers.HeightKeyframes),
+                NoteKeyframes = ReadNoteEventList(ref pointers.NoteKeyframes),
+                ScoreKeyframes = ReadScoreEventList(ref pointers.ScoreKeyframes),
+                ComboKeyframes = ReadComboEventList(ref pointers.ComboKeyframes),
+                MultiplierKeyframes = ReadMultiplierEventList(ref pointers.MultiplierKeyframes),
+                EnergyKeyframes = ReadEnergyEventList(ref pointers.EnergyKeyframes)
             };
             return file;
         }
@@ -47,15 +47,15 @@ namespace ScoreSaber.Core.ReplaySystem.Data {
         private Pointers ReadPointers() {
             int offset = 0;
             return new Pointers {
-                metadata = ReadInt(ref offset),
-                poseKeyframes = ReadInt(ref offset),
-                heightKeyframes = ReadInt(ref offset),
-                noteKeyframes = ReadInt(ref offset),
-                scoreKeyframes = ReadInt(ref offset),
-                comboKeyframes = ReadInt(ref offset),
-                multiplierKeyframes = ReadInt(ref offset),
-                energyKeyframes = ReadInt(ref offset),
-                fpsKeyframes = ReadInt(ref offset)
+                Metadata = ReadInt(ref offset),
+                PoseKeyframes = ReadInt(ref offset),
+                HeightKeyframes = ReadInt(ref offset),
+                NoteKeyframes = ReadInt(ref offset),
+                ScoreKeyframes = ReadInt(ref offset),
+                ComboKeyframes = ReadInt(ref offset),
+                MultiplierKeyframes = ReadInt(ref offset),
+                EnergyKeyframes = ReadInt(ref offset),
+                FPSKeyframes = ReadInt(ref offset)
             };
         }
 
@@ -101,7 +101,7 @@ namespace ScoreSaber.Core.ReplaySystem.Data {
                 CutNormal = ReadVRPosition(ref offset),
                 SaberDirection = ReadVRPosition(ref offset),
                 SaberType = ReadInt(ref offset),
-                DirectionOK = ReadBool(ref offset),
+                DirectionOk = ReadBool(ref offset),
                 SaberSpeed = ReadFloat(ref offset),
                 CutAngle = ReadFloat(ref offset),
                 CutDistanceToCenter = ReadFloat(ref offset),

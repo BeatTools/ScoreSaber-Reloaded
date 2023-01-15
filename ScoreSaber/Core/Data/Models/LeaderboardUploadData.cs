@@ -1,6 +1,7 @@
 ﻿#region
 
 using Newtonsoft.Json;
+using ScoreSaber.Core.Data.Internal;
 using ScoreSaber.Core.Utils;
 using System;
 using System.Collections.Generic;

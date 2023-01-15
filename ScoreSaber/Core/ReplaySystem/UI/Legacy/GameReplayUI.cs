@@ -10,7 +10,7 @@ using Zenject;
 
 #endregion
 
-namespace ScoreSaber.Core.ReplaySystem.Legacy.UI {
+namespace ScoreSaber.Core.ReplaySystem.UI.Legacy {
     internal class GameReplayUI : MonoBehaviour {
         [Inject] private readonly GameplayCoreSceneSetupData _gameplayCoreSceneSetupData = null;
 
@@ -27,8 +27,8 @@ namespace ScoreSaber.Core.ReplaySystem.Legacy.UI {
             float timeScale = 1f;
 
             if (!Plugin.ReplayState.IsLegacyReplay) {
-                if (Plugin.ReplayState.LoadedReplayFile.noteKeyframes.Count > 0) {
-                    timeScale = Plugin.ReplayState.LoadedReplayFile.noteKeyframes[0].TimeSyncTimescale;
+                if (Plugin.ReplayState.LoadedReplayFile.NoteKeyframes.Count > 0) {
+                    timeScale = Plugin.ReplayState.LoadedReplayFile.NoteKeyframes[0].TimeSyncTimescale;
                 }
             }
 

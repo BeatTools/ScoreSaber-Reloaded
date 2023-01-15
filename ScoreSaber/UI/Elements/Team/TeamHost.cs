@@ -56,7 +56,7 @@ namespace ScoreSaber.UI.Elements.Team {
 
         #region BSML Values
 
-        [UIValue("profiles")] public List<object> profiles = new List<object>();
+        [UIValue("profiles")] public readonly List<object> profiles = new List<object>();
 
         [UIValue("needs-scroll-view")] protected bool needsScrollView => profiles.Count > 9;
 

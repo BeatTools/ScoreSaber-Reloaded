@@ -13,16 +13,16 @@ namespace ScoreSaber.UI.Elements.Leaderboard {
         #region BSML Components
 
         [UIParams] protected BSMLParserParams parserParams = null;
-        [UIComponent("button1")] protected Button button1 = null;
-        [UIComponent("button2")] protected Button button2 = null;
-        [UIComponent("button3")] protected Button button3 = null;
-        [UIComponent("button4")] protected Button button4 = null;
-        [UIComponent("button5")] protected Button button5 = null;
-        [UIComponent("button6")] protected Button button6 = null;
-        [UIComponent("button7")] protected Button button7 = null;
-        [UIComponent("button8")] protected Button button8 = null;
-        [UIComponent("button9")] protected Button button9 = null;
-        [UIComponent("button10")] protected Button button10 = null;
+        [UIComponent("button1")] protected readonly Button button1 = null;
+        [UIComponent("button2")] protected readonly Button button2 = null;
+        [UIComponent("button3")] protected readonly Button button3 = null;
+        [UIComponent("button4")] protected readonly Button button4 = null;
+        [UIComponent("button5")] protected readonly Button button5 = null;
+        [UIComponent("button6")] protected readonly Button button6 = null;
+        [UIComponent("button7")] protected readonly Button button7 = null;
+        [UIComponent("button8")] protected readonly Button button8 = null;
+        [UIComponent("button9")] protected readonly Button button9 = null;
+        [UIComponent("button10")] protected readonly Button button10 = null;
 #if PPV3
         [UIComponent("buttonPPv3Replay")]
         protected Button buttonPPv3Replay = null;

@@ -30,7 +30,7 @@ namespace ScoreSaber.Core.ReplaySystem.UI {
             _headerStyle = new GUIStyle();
             _headerStyle.fontSize = 16;
             _headerStyle.normal.textColor = Color.white;
-            _initialTimeScale = _file.noteKeyframes.FirstOrDefault().TimeSyncTimescale;
+            _initialTimeScale = _file.NoteKeyframes.FirstOrDefault().TimeSyncTimescale;
             _posePlayer.DidUpdatePose += PosePlayer_DidUpdatePose;
         }
 

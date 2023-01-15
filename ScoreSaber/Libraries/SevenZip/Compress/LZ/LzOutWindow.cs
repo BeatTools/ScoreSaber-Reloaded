@@ -4,7 +4,7 @@ using System.IO;
 
 #endregion
 
-namespace SevenZip.Compression.LZ {
+namespace ScoreSaber.Libraries.SevenZip.Compress.LZ {
     public class OutWindow {
         private byte[] _buffer;
         private uint _pos;

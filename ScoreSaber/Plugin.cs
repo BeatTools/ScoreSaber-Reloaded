@@ -8,6 +8,7 @@ using IPA.Utilities.Async;
 using ScoreSaber.Core;
 using ScoreSaber.Core.Daemons;
 using ScoreSaber.Core.Data;
+using ScoreSaber.Core.Data.Internal;
 using ScoreSaber.Core.ReplaySystem;
 using ScoreSaber.Core.ReplaySystem.Installers;
 using ScoreSaber.UI.Elements.Profile;
@@ -27,14 +28,14 @@ using IPALogger = IPA.Logging.Logger;
 namespace ScoreSaber {
     [Plugin(RuntimeOptions.DynamicInit)]
     public class Plugin {
-        internal static Material Furry;
+        private static Material _furry;
         internal static Material NonFurry;
         internal static Material NoGlowMatRound;
 
         private static bool _scoreSubmission = true;
-        internal Harmony harmony;
+        private Harmony Harmony;
 
-        internal Version LibVersion;
+        internal readonly Version LibVersion;
 
         [Init]
         public Plugin(IPALogger logger, PluginMetadata metadata, Zenjector zenjector) {
@@ -113,8 +114,8 @@ namespace ScoreSaber {
             Settings = Settings.LoadSettings();
             ReplayState = new ReplayState();
             if (!Settings.disableScoreSaber) {
-                harmony = new Harmony("com.umbranox.BeatSaber.ScoreSaber");
-                harmony.PatchAll(Assembly.GetExecutingAssembly());
+                Harmony = new Harmony("com.umbranox.BeatSaber.ScoreSaber");
+                Harmony.PatchAll(Assembly.GetExecutingAssembly());
                 PlayerPrefs.SetInt("lbPatched", 1);
             }
         }
@@ -138,7 +139,7 @@ namespace ScoreSaber {
         }
 
         internal static async Task<Material> GetFurryMaterial() {
-            if (Furry == null) {
+            if (_furry == null) {
                 AssetBundle bundle = null;
 
                 IEnumerator SeriouslyUnityMakeSomethingBetter() {
@@ -149,13 +150,13 @@ namespace ScoreSaber {
                 }
 
                 await Coroutines.AsTask(SeriouslyUnityMakeSomethingBetter());
-                Furry = new Material(bundle.LoadAsset<Material>("FurMat"));
+                _furry = new Material(bundle.LoadAsset<Material>("FurMat"));
                 bundle.Unload(false);
                 NonFurry = BeatSaberUI.MainTextFont.material;
-                Furry.mainTexture = BeatSaberUI.MainTextFont.material.mainTexture;
+                _furry.mainTexture = BeatSaberUI.MainTextFont.material.mainTexture;
             }
 
-            return Furry;
+            return _furry;
         }
 
         internal static void LogNull(int number, object hmm) {

@@ -8,7 +8,7 @@ using UnityEngine;
 
 #endregion
 
-namespace ScoreSaber.UI.Other {
+namespace ScoreSaber.UI.Elements {
     internal class GlobalCell {
         private readonly string _identifier;
         private readonly Action<string, string> _profileClicked;

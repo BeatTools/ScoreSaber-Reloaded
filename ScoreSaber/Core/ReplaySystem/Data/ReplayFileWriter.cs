@@ -1,6 +1,6 @@
 ﻿#region
 
-using SevenZip.Compression.LZMA;
+using ScoreSaber.Libraries.SevenZip.Compress.LzmaAlone;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,34 +10,34 @@ using System.Text;
 
 namespace ScoreSaber.Core.ReplaySystem.Data {
     internal class ReplayFileWriter {
-        private const int _pointerSize = 38;
+        private const int PointerSize = 38;
 
         internal byte[] Write(ReplayFile file) {
             try {
                 byte[] compressed = null;
                 using (MemoryStream outputStream = new MemoryStream()) {
                     int pointerLocation = (int)outputStream.Length;
-                    for (int i = 0; i < _pointerSize; i += 4) {
+                    for (int i = 0; i < PointerSize; i += 4) {
                         WriteInt(0, outputStream);
                     }
 
                     int metadataPointer = (int)outputStream.Length;
-                    WriteMetadata(file.metadata, outputStream);
+                    WriteMetadata(file.Metadata, outputStream);
                     int poseKeyframePointer = (int)outputStream.Length;
 
-                    WriteVRPoseGroupList(new List<VRPoseGroup>(file.poseKeyframes), outputStream);
+                    WriteVRPoseGroupList(new List<VRPoseGroup>(file.PoseKeyframes), outputStream);
                     int heightEventsPointer = (int)outputStream.Length;
-                    WriteHeightChangeList(new List<HeightEvent>(file.heightKeyframes), outputStream);
+                    WriteHeightChangeList(new List<HeightEvent>(file.HeightKeyframes), outputStream);
                     int noteEventsPointer = (int)outputStream.Length;
-                    WriteNoteEventList(new List<NoteEvent>(file.noteKeyframes), outputStream);
+                    WriteNoteEventList(new List<NoteEvent>(file.NoteKeyframes), outputStream);
                     int scoreEventsPointer = (int)outputStream.Length;
-                    WriteScoreEventList(new List<ScoreEvent>(file.scoreKeyframes), outputStream);
+                    WriteScoreEventList(new List<ScoreEvent>(file.ScoreKeyframes), outputStream);
                     int comboEventsPointer = (int)outputStream.Length;
-                    WriteComboEventList(new List<ComboEvent>(file.comboKeyframes), outputStream);
+                    WriteComboEventList(new List<ComboEvent>(file.ComboKeyframes), outputStream);
                     int multiplierEventsPointer = (int)outputStream.Length;
-                    WriteMultiplierEventList(new List<MultiplierEvent>(file.multiplierKeyframes), outputStream);
+                    WriteMultiplierEventList(new List<MultiplierEvent>(file.MultiplierKeyframes), outputStream);
                     int energyEventsPointer = (int)outputStream.Length;
-                    WriteEnergyEventList(new List<EnergyEvent>(file.energyKeyframes), outputStream);
+                    WriteEnergyEventList(new List<EnergyEvent>(file.EnergyKeyframes), outputStream);
 
                     // Write pointers
                     outputStream.Position = pointerLocation;
@@ -117,7 +117,7 @@ namespace ScoreSaber.Core.ReplaySystem.Data {
             bytesWritten += WriteVRPosition(noteEvent.CutNormal, outputStream);
             bytesWritten += WriteVRPosition(noteEvent.SaberDirection, outputStream);
             bytesWritten += WriteInt(noteEvent.SaberType, outputStream);
-            bytesWritten += WriteBool(noteEvent.DirectionOK, outputStream);
+            bytesWritten += WriteBool(noteEvent.DirectionOk, outputStream);
             bytesWritten += WriteFloat(noteEvent.SaberSpeed, outputStream);
             bytesWritten += WriteFloat(noteEvent.CutAngle, outputStream);
             bytesWritten += WriteFloat(noteEvent.CutDistanceToCenter, outputStream);

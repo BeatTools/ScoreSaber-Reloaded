@@ -1,6 +1,7 @@
 ﻿#region
 
 using ScoreSaber.Core.Data;
+using ScoreSaber.Core.Data.Internal;
 using ScoreSaber.Core.Data.Wrappers;
 using ScoreSaber.Extensions;
 using System;

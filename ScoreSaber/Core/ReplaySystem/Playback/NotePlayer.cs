@@ -31,16 +31,18 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
             _saberManager = saberManager;
             _gameNotePool = Accessors.GameNotePool(ref basicBeatmapObjectManager);
             _bombNotePool = Accessors.BombNotePool(ref basicBeatmapObjectManager);
-            _sortedNoteEvents = file.noteKeyframes.OrderBy(nk => nk.Time).ToArray();
+            _sortedNoteEvents = file.NoteKeyframes.OrderBy(nk => nk.Time).ToArray();
         }
 
         public void TimeUpdate(float newTime) {
             for (int c = 0; c < _sortedNoteEvents.Length; c++) {
-                if (_sortedNoteEvents[c].Time >= newTime) {
-                    _lastIndex = c;
-                    Tick();
-                    return;
+                if (!(_sortedNoteEvents[c].Time >= newTime)) {
+                    continue;
                 }
+
+                _lastIndex = c;
+                Tick();
+                return;
             }
 
             _lastIndex = _sortedNoteEvents.Count() != 0 ? _sortedNoteEvents.Length - 1 : 0;
@@ -63,19 +65,24 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
 
         private bool ProcessEvent(NoteEvent activeEvent) {
             bool foundNote = false;
-            if (activeEvent.EventType == NoteEventType.GoodCut || activeEvent.EventType == NoteEventType.BadCut) {
-                foreach (GameNoteController noteController in _gameNotePool.activeItems) {
-                    if (HandleEvent(activeEvent, noteController)) {
+            switch (activeEvent.EventType)
+            {
+                case NoteEventType.GoodCut:
+                case NoteEventType.BadCut: {
+                    if (_gameNotePool.activeItems.Any(noteController => HandleEvent(activeEvent, noteController)))
+                    {
                         foundNote = true;
-                        break;
                     }
+
+                    break;
                 }
-            } else if (activeEvent.EventType == NoteEventType.Bomb) {
-                foreach (BombNoteController bombController in _bombNotePool.activeItems) {
-                    if (HandleEvent(activeEvent, bombController)) {
+                case NoteEventType.Bomb: {
+                    if (_bombNotePool.activeItems.Any(bombController => HandleEvent(activeEvent, bombController)))
+                    {
                         foundNote = true;
-                        break;
                     }
+
+                    break;
                 }
             }
 
@@ -83,45 +90,46 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
         }
 
         private bool HandleEvent(NoteEvent activeEvent, NoteController noteController) {
-            if (DoesNoteMatchID(activeEvent.NoteID, noteController.noteData)) {
-                Saber correctSaber = noteController.noteData.colorType == ColorType.ColorA
-                    ? _saberManager.leftSaber
-                    : _saberManager.rightSaber;
-                Transform noteTransform = noteController.noteTransform;
-
-                NoteCutInfo noteCutInfo = new NoteCutInfo(noteController.noteData,
-                    activeEvent.SaberSpeed > 2f,
-                    activeEvent.DirectionOK,
-                    activeEvent.SaberType == (int)correctSaber.saberType,
-                    false,
-                    activeEvent.SaberSpeed,
-                    activeEvent.SaberDirection.Convert(),
-                    noteController.noteData.colorType == ColorType.ColorA ? SaberType.SaberA : SaberType.SaberB,
-                    noteController.noteData.time - activeEvent.Time,
-                    activeEvent.CutDirectionDeviation,
-                    activeEvent.CutPoint.Convert(),
-                    activeEvent.CutNormal.Convert(),
-                    activeEvent.CutDistanceToCenter,
-                    activeEvent.CutAngle,
-                    noteController.worldRotation,
-                    noteController.inverseWorldRotation,
-                    noteTransform.rotation,
-                    noteTransform.position,
-                    correctSaber.movementData
-                );
-
-                _recognizedNoteCutInfos.Add(noteCutInfo, activeEvent);
-                noteController.InvokeMethod<object, NoteController>("SendNoteWasCutEvent", noteCutInfo);
-                return true;
+            if (!DoesNoteMatchID(activeEvent.NoteID, noteController.noteData)) {
+                return false;
             }
 
-            return false;
+            Saber correctSaber = noteController.noteData.colorType == ColorType.ColorA
+                ? _saberManager.leftSaber
+                : _saberManager.rightSaber;
+            Transform noteTransform = noteController.noteTransform;
+
+            NoteCutInfo noteCutInfo = new NoteCutInfo(noteController.noteData,
+                activeEvent.SaberSpeed > 2f,
+                activeEvent.DirectionOk,
+                activeEvent.SaberType == (int)correctSaber.saberType,
+                false,
+                activeEvent.SaberSpeed,
+                activeEvent.SaberDirection.Convert(),
+                noteController.noteData.colorType == ColorType.ColorA ? SaberType.SaberA : SaberType.SaberB,
+                noteController.noteData.time - activeEvent.Time,
+                activeEvent.CutDirectionDeviation,
+                activeEvent.CutPoint.Convert(),
+                activeEvent.CutNormal.Convert(),
+                activeEvent.CutDistanceToCenter,
+                activeEvent.CutAngle,
+                noteController.worldRotation,
+                noteController.inverseWorldRotation,
+                noteTransform.rotation,
+                noteTransform.position,
+                correctSaber.movementData
+            );
+
+            _recognizedNoteCutInfos.Add(noteCutInfo, activeEvent);
+            noteController.InvokeMethod<object, NoteController>("SendNoteWasCutEvent", noteCutInfo);
+            return true;
+
         }
 
         [AffinityPostfix]
         [AffinityPatch(typeof(GoodCutScoringElement), nameof(GoodCutScoringElement.Init))]
-        protected void ForceCompleteGoodScoringElements(GoodCutScoringElement __instance, NoteCutInfo noteCutInfo,
-            CutScoreBuffer ____cutScoreBuffer) {
+        protected void ForceCompleteGoodScoringElements(GoodCutScoringElement instance, NoteCutInfo noteCutInfo,
+            CutScoreBuffer cutScoreBuffer) {
             // Just in case someone else is creating their own scoring elements, we want to ensure that we're only force completing ones we know we've created
             if (!_recognizedNoteCutInfos.TryGetValue(noteCutInfo, out NoteEvent activeEvent)) {
                 return;
@@ -129,19 +137,21 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
 
             _recognizedNoteCutInfos.Remove(noteCutInfo);
 
-            if (!__instance.isFinished) {
-                SaberSwingRatingCounter ratingCounter = Accessors.RatingCounter(ref ____cutScoreBuffer);
-
-                // Supply the rating counter with the proper cut ratings
-                Accessors.AfterCutRating(ref ratingCounter) = activeEvent.AfterCutRating;
-                Accessors.BeforeCutRating(ref ratingCounter) = activeEvent.BeforeCutRating;
-
-                // Then immediately finish it
-                ____cutScoreBuffer.HandleSaberSwingRatingCounterDidFinish(ratingCounter);
-
-                ScoringElement element = __instance;
-                Accessors.ScoringElementFinisher(ref element, true);
+            if (instance.isFinished) {
+                return;
             }
+
+            SaberSwingRatingCounter ratingCounter = Accessors.RatingCounter(ref cutScoreBuffer);
+
+            // Supply the rating counter with the proper cut ratings
+            Accessors.AfterCutRating(ref ratingCounter) = activeEvent.AfterCutRating;
+            Accessors.BeforeCutRating(ref ratingCounter) = activeEvent.BeforeCutRating;
+
+            // Then immediately finish it
+            cutScoreBuffer.HandleSaberSwingRatingCounterDidFinish(ratingCounter);
+
+            ScoringElement element = instance;
+            Accessors.ScoringElementFinisher(ref element, true);
         }
 
         private static bool DoesNoteMatchID(NoteID id, NoteData note) {

@@ -1,4 +1,4 @@
-namespace SevenZip.Compression.RangeCoder {
+namespace ScoreSaber.Libraries.SevenZip.Compress.RangeCoder {
     internal struct BitEncoder {
         public const int kNumBitModelTotalBits = 11;
         public const uint kBitModelTotal = 1 << kNumBitModelTotalBits;

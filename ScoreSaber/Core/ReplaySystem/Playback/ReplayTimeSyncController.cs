@@ -10,7 +10,7 @@ using Zenject;
 
 namespace ScoreSaber.Core.ReplaySystem.Playback {
     internal class ReplayTimeSyncController : TimeSynchronizer, ITickable {
-        private readonly AudioManagerSO _audioManagerSO;
+        private readonly AudioManagerSO _audioManagerSo;
         private readonly BeatmapObjectSpawnController _beatmapObjectSpawnController;
         private readonly List<IScroller> _scrollers;
         private readonly AudioTimeSyncController.InitData _audioInitData;
@@ -31,7 +31,7 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
             _noteCutSoundEffectManager = noteCutSoundEffectManager;
             _beatmapObjectSpawnController = beatmapObjectSpawnController;
             _beatmapObjectCallbackController = beatmapObjectCallbackController;
-            _audioManagerSO = Accessors.AudioManager(ref noteCutSoundEffectManager);
+            _audioManagerSo = Accessors.AudioManager(ref noteCutSoundEffectManager);
         }
 
         public void Tick() {
@@ -97,11 +97,11 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
         }
 
         public void OverrideTime(float time) {
-            if (Mathf.Abs(time - audioTimeSyncController.songTime) <= 0.25f) {
+            if (Mathf.Abs(time - base.audioTimeSyncController.songTime) <= 0.25f) {
                 return;
             }
 
-            AudioTimeSyncController _audioTimeSyncController = audioTimeSyncController; // UMBRAMEGALUL
+            AudioTimeSyncController audioTimeSyncController = base.audioTimeSyncController; // UMBRAMEGALUL
             CutSoundEffectOverride.Buffer = true;
             CancelAllHitSounds();
 
@@ -130,13 +130,13 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
                 item.Dissolve(0f);
             }
 
-            AudioTimeSyncController.State previousState = audioTimeSyncController.state;
+            AudioTimeSyncController.State previousState = base.audioTimeSyncController.state;
 
-            audioTimeSyncController.Pause();
-            audioTimeSyncController.SeekTo(time / audioTimeSyncController.timeScale);
+            base.audioTimeSyncController.Pause();
+            base.audioTimeSyncController.SeekTo(time / base.audioTimeSyncController.timeScale);
 
             if (previousState == AudioTimeSyncController.State.Playing) {
-                audioTimeSyncController.Resume();
+                base.audioTimeSyncController.Resume();
             }
 
             Accessors.InitialStartFilterTime(ref _callbackInitData) = time;
@@ -149,24 +149,24 @@ namespace ScoreSaber.Core.ReplaySystem.Playback {
                 }
             }
 
-            Accessors.AudioSongTime(ref _audioTimeSyncController) = time;
+            Accessors.AudioSongTime(ref audioTimeSyncController) = time;
 
-            audioTimeSyncController.Update();
+            base.audioTimeSyncController.Update();
             UpdateTimes();
         }
 
         public void OverrideTimeScale(float newScale) {
             CancelAllHitSounds();
-            AudioTimeSyncController _audioTimeSyncController = audioTimeSyncController; // UMBRAMEGALUL
-            Accessors.AudioSource(ref _audioTimeSyncController).pitch = newScale;
+            AudioTimeSyncController audioTimeSyncController = base.audioTimeSyncController; // UMBRAMEGALUL
+            Accessors.AudioSource(ref audioTimeSyncController).pitch = newScale;
 
-            Accessors.AudioTimeScale(ref _audioTimeSyncController) = newScale;
-            Accessors.AudioStartOffset(ref _audioTimeSyncController)
-                = (Time.timeSinceLevelLoad * _audioTimeSyncController.timeScale) -
-                  (_audioTimeSyncController.songTime + _audioInitData.songTimeOffset);
+            Accessors.AudioTimeScale(ref audioTimeSyncController) = newScale;
+            Accessors.AudioStartOffset(ref audioTimeSyncController)
+                = (Time.timeSinceLevelLoad * audioTimeSyncController.timeScale) -
+                  (audioTimeSyncController.songTime + _audioInitData.songTimeOffset);
 
-            _audioManagerSO.musicPitch = 1f / newScale;
-            _audioTimeSyncController.Update();
+            _audioManagerSo.musicPitch = 1f / newScale;
+            audioTimeSyncController.Update();
         }
 
         public void CancelAllHitSounds() {

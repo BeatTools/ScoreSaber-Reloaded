@@ -5,7 +5,7 @@ using System.Linq;
 using Tweening;
 using UnityEngine;
 using Zenject;
-using static ScoreSaber.Core.Data.Settings;
+using static ScoreSaber.Core.Data.Internal.Settings;
 
 #endregion
 

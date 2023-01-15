@@ -4,6 +4,7 @@ using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using HMUI;
 using ScoreSaber.Core.Data;
+using ScoreSaber.Core.Data.Internal;
 using ScoreSaber.Core.Data.Models;
 using ScoreSaber.Core.Data.Wrappers;
 using ScoreSaber.Core.Utils;

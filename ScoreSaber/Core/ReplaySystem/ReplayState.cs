@@ -1,6 +1,7 @@
 ﻿#region
 
 using ScoreSaber.Core.ReplaySystem.Data;
+using ScoreSaber.Core.ReplaySystem.Legacy;
 using System.Collections.Generic;
 
 #endregion
